@@ -1,0 +1,15 @@
+An error occurred: 'label' must be of length 'x'
+Traceback (most recent call last):
+  File "D:\PycharmProjects\pythonProject\Coc6.0\matplotlib_charter.py", line 1107, in data_charter
+    charts(window, clock, chart_choices, xs=xs, ys=ys, labels=pie_labels, one_table=True)
+  File "D:\PycharmProjects\pythonProject\Coc6.0\matplotlib_charter.py", line 297, in charts
+    charting('pie', True, fig, j + 1, max_num, x=x, labels=all_values['labels'])
+  File "D:\PycharmProjects\pythonProject\Coc6.0\matplotlib_charter.py", line 158, in charting
+    plot.pie(all_values['x'], labels=all_values['labels'], autopct='%1.3f%%')
+  File "D:\Anaconda3\Lib\site-packages\matplotlib\__init__.py", line 1459, in inner
+    return func(ax, *map(sanitize_sequence, args), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\Lib\site-packages\matplotlib\axes\_axes.py", line 3201, in pie
+    raise ValueError("'label' must be of length 'x'")
+ValueError: 'label' must be of length 'x'
+
