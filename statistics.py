@@ -2086,7 +2086,7 @@ def data_distribution(window, clock):
                               show_2_sigma=charting_options[1], show_3_sigma=charting_options[2])
 
 
-def load_matrix(comments='', data_collecting_method=True, req: tuple[int, int] = None):
+def load_matrix(window, comments='', data_collecting_method=True, req: tuple[int, int] = None):
     global message_window
     if data_collecting_method:
         message_window.browser("Choose an Excel file for the matrix's source"+comments, [('EXCEL files', '.xlsx')])
@@ -2294,7 +2294,6 @@ def data_visualize_3d(window, clock):
                     message_window.error('The three datas do not have the same size:' + str(len(x_data)) + ',' + str(
                         len(y_data)) + ',' + str(len(z_data)))
                     return
-                #x, y, z = numpy.meshgrid(x_data, y_data, z_data)
                 # draw
                 if curr_type == 0: # line plots
                     axs[-1].plot(np.array(x_data), np.array(y_data), np.array(z_data))
@@ -2311,7 +2310,7 @@ def data_visualize_3d(window, clock):
                                        'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
                                       file_data=file_data)
                 if y_data is None: message_window.error('No y data is selected!');continue
-                z_data = load_matrix(comments='z[shape:('+str(len(x_data))+','+str(len(y_data))+')]', data_collecting_method=data_collecting_method,
+                z_data = load_matrix(window,comments='z[shape:('+str(len(x_data))+','+str(len(y_data))+')]', data_collecting_method=data_collecting_method,
                                      req=(len(x_data), len(y_data)))
                 if z_data is None:
                     message_window.error('No z data is selected!');continue
@@ -2348,7 +2347,7 @@ def data_visualize_3d(window, clock):
                 y_data = loading_data(data_collecting_method, window, 'for y data of the bar', reload_data=refresh_data,
                                       file_data=file_data)
                 if y_data is None: message_window.error('No y data is selected!');continue
-                z_data = load_matrix('for the data part',data_collecting_method=data_collecting_method, req=(len(x_data), len(y_data)))
+                z_data = load_matrix(window, 'for the data part',data_collecting_method=data_collecting_method, req=(len(x_data), len(y_data)))
                 if z_data is None:
                     message_window.error('No value is selected!');continue
                 Index = 0
@@ -2359,37 +2358,25 @@ def data_visualize_3d(window, clock):
 
 
             elif curr_type == 6:
-                x_data = loading_data(data_collecting_method, window, 'for x:' +
-                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
-                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
+                x_data = loading_data(data_collecting_method, window, 'for x:quivers', reload_data=refresh_data,
                                       file_data=file_data)
                 if x_data is None: message_window.error('No x data is selected!');continue
-                y_data = loading_data(data_collecting_method, window, 'for y:' +
-                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
-                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
+                y_data = loading_data(data_collecting_method, window, 'for y:quivers', reload_data=refresh_data,
                                       file_data=file_data)
                 if y_data is None: message_window.error('No y data is selected!');continue
-                z_data = loading_data(data_collecting_method, window, 'for z:' +
-                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
-                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
+                z_data = loading_data(data_collecting_method, window, 'for z:quivers', reload_data=refresh_data,
                                       file_data=file_data)
                 if z_data is None: message_window.error('No z data is selected!');continue
                 if not (len(x_data) == len(y_data) == len(z_data)):
                     message_window.error("Dimensions don't match:"+str(len(x_data))+','+str(y_data)+','+str(z_data))
 
-                u_data = loading_data(data_collecting_method, window, 'for u:' +
-                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
-                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
+                u_data = loading_data(data_collecting_method, window, 'for u:quivers', reload_data=refresh_data,
                                       file_data=file_data)
                 if u_data is None: message_window.error('No u data is selected!');continue
-                v_data = loading_data(data_collecting_method, window, 'for v:' +
-                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
-                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
+                v_data = loading_data(data_collecting_method, window, 'for v:quivers', reload_data=refresh_data,
                                       file_data=file_data)
                 if v_data is None: message_window.error('No v data is selected!');continue
-                w_data = loading_data(data_collecting_method, window, 'for z:' +
-                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
-                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
+                w_data = loading_data(data_collecting_method, window, 'for z:quivers', reload_data=refresh_data,
                                       file_data=file_data)
                 if w_data is None: message_window.error('No w data is selected!');continue
 
