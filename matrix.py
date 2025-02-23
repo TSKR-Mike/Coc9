@@ -140,6 +140,9 @@ def loading_matrix(data_collecting_method, window, names,comments:str=''):
                                                "input you line of data split each other with ';'",
                                                'OK', 'CANCEL', backgroundColor=(90, 90, 150), promptTextColor=(0, 0, 0),
                                                inputTextColor=(0, 0, 0))
+            if curr_data is None:
+                message_window.error('No inputs is given.This line is skipped.')
+                continue
             curr_data = curr_data.split(";")
             data2 = []
             unavailable = 0

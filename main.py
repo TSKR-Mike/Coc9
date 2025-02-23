@@ -114,7 +114,6 @@ def show_user_text():
         text3.draw()
 
 
-# 加载动画
 pygame.init()
 clock = pygame.time.Clock()
 window = pygame.display.set_mode((1004, 610), DOUBLEBUF)
@@ -163,7 +162,7 @@ try:
     loading.setValue('Loading dependencies...94% complete')
     loading.draw()
     ########################################################
-    from statistics import data_visualize, Message_window, data_analyze, data_comparison, data_distribution
+    from statistics import data_visualize_2d, Message_window, data_analyze, data_comparison, data_distribution, data_visualize_3d
     ######################################################
     from checkbox import CheckBox
     from progress_bar import windows_progress_bar
@@ -200,8 +199,8 @@ pygame.font.init()
 loading_obj.done()
 """
 ----------------------------
-| version: 8.7             |
-| develop time: 2025-2-19  |
+| version: 9.0             |
+| develop time: 2025-2-23  |
 ----------------------------
 """
 
@@ -1212,7 +1211,13 @@ while True:
                         plt.legend()  # 显示文本
                         plt.show()
                 elif INDEX == 2:  # data visualize
-                    data_visualize(window, clock)
+                    visualize_2d = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
+                                                                        'Select the type of visualize',
+                                                                        '2D', "3D")
+                    if visualize_2d:
+                        data_visualize_2d(window, clock)
+                    else:
+                        data_visualize_3d(window, clock)
                 event_proceeded = True
                 break
 
