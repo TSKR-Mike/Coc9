@@ -199,8 +199,8 @@ pygame.font.init()
 loading_obj.done()
 """
 ----------------------------
-| version: 9.0             |
-| develop time: 2025-2-23  |
+| version: 9.1             |
+| develop time: 2025-2-28  |
 ----------------------------
 """
 
@@ -1314,22 +1314,35 @@ while True:
                         symbols = sympy.symbols(symbols)
                         limit = 'None'
                         try:
-                            limit = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
-                                                                'input the limit that you use in the formula:' + str(
-                                                                    formula) + '(' + str(symbols) + ')',
-                                                                [], [], 'OK',
-                                                                'CANCEL', backgroundColor=(90, 90, 150),
-                                                                promptTextColor=(0, 0, 0),
-                                                                inputTextColor=(0, 0, 0))
-                            if limit is None:
-                                message_window.error('no limit is given');break
-                            direction = CheckBox(3, ['+', '-', '+/-'], 1, window, clock, first_x=120, first_y=30, each_add_x=0, each_add_y=20)
+                            no_infinity_limits = message_window.question('select limit type', 'Do you want to do the normal limit(no Infinity included)')
+                            if no_infinity_limits:
+                                limit = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
+                                                                    'input the limit that you use in the formula:' + str(
+                                                                        formula) + '(' + str(symbols) + ')',
+                                                                    [], [], 'OK',
+                                                                    'CANCEL', backgroundColor=(90, 90, 150),
+                                                                    promptTextColor=(0, 0, 0),
+                                                                    inputTextColor=(0, 0, 0))
+                                if limit is None:
+                                    message_window.error('no limit is given');break
+                                direction = CheckBox(3, ['+', '-', '+/-'], 1, window, clock, first_x=120, first_y=30, each_add_x=0, each_add_y=20)
 
-                            simplified_formula = sympy.sympify(formula)
-                            if type(direction.clicked_choices) == str or direction.clicked_choices == []:
-                                answers = sympy.limit(simplified_formula, symbols, limit)
-                            else :
-                                answers = sympy.limit(simplified_formula, symbols, limit, ['+', '-', '+-'][direction.clicked_choices[0]])
+                                simplified_formula = sympy.sympify(formula)
+                                if type(direction.clicked_choices) == str or direction.clicked_choices == []:
+                                    answers = sympy.limit(simplified_formula, symbols, limit)
+                                else :
+                                    answers = sympy.limit(simplified_formula, symbols, limit, ['+', '-', '+-'][direction.clicked_choices[0]])
+                            else:
+                                pos_inf = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
+                                                                                    'What infinity do you want?',
+                                                                                    'Postive(+) Infinity',
+                                                                                    "Negative(-) Infinity")
+                                simplified_formula = sympy.sympify(formula)
+                                if pos_inf:
+                                    answers = sympy.limit(simplified_formula, symbols, sympy.oo)
+                                else:
+                                    answers = sympy.limit(simplified_formula, symbols, -sympy.oo)
+
                             answer = str(answers)
                             if answer == 'oo':
                                 answer = 'infinity'

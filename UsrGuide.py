@@ -12,7 +12,7 @@ class UsrNotice(subWindow):
         self.texts_p2 = []
 
         self.texts_p1.append(
-            self.font.render('                                Common Questions', True,
+            self.font.render('                                Common Questions(P1)', True,
                              (0, 0, 0)))
         self.texts_p1.append(self.font.render('1. About root', True, (0, 0, 0)))
         self.texts_p1.append(
@@ -51,17 +51,30 @@ class UsrNotice(subWindow):
                              (0, 0, 0)))
 
         self.texts_p2.append(
-            self.font.render('                                Common Questions', True,
+            self.font.render('                                Common Questions(P2)', True,
                              (0, 0, 0)))
         self.texts_p2.append(
             self.font.render('6.How to copy the answer/formula', True,
                              (0, 0, 0)))
         self.texts_p2.append(
-            self.font.render('     For formula, press the "copy formula" button. As for the answer, use Ctrl+C or click the', True,
+            self.font.render('     For formula, press the "copy formula" button. As for the answer, use Ctrl+C or ', True,
                              (0, 0, 0)))
         self.texts_p2.append(
-            self.font.render('     button "copy answer".', True,
+            self.font.render('     click the button "copy answer".', True,
                              (0, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('7.Compound expression', True,
+                             (0, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('     Most of the functions is available with compound expressions.', True,
+                             (0, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('     But the base of Log (mean the "n" part of "nlogm") do NOT support operations', True,
+                             (150, 0, 0)))
+        self.texts_p2.append(
+            self.font.render(
+                '     like this.', True,
+                (150, 0, 0)))
 
         self.left = Button(window, (loc[0]+self.length-60, loc[1]+self.height-30), 30, 30, '<',(200, 200, 200),
                                      (0, 0, 0), fontName='fonts/JetBrainsMono-Light.ttf', font_size=15)

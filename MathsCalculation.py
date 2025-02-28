@@ -65,13 +65,9 @@ def __calculation(inputting: str, outputting: list, index: int):
             g = Calculation(turn_normal_expr_to_internal_expr(str(g)[1:-1]))
         if str(m)[0] == '[' and str(m)[-1] == ']':
             m = Calculation(turn_normal_expr_to_internal_expr(str(m)[1:-1]))
-        if m == '-':
-            del outputting[index - 2]
-            outputting[index - 1] = -Decimal(g)
-        else:
-            del outputting[index - 2]
-            del outputting[index - 2]
-            outputting[index - 2] = Decimal(m) - Decimal(g)
+        del outputting[index - 2]
+        del outputting[index - 2]
+        outputting[index - 2] = Decimal(m) - Decimal(g)
     elif inputting == '/':
         m = outputting[(index - 2)]
         g = outputting[(index - 1)]
@@ -370,11 +366,10 @@ def ReversedPolishNotation(tokens:list[str]):
 # 计算试例  ∮∭∬∑±∫∰∯
 if __name__ == '__main__':
     #print(trans_to_RPN('9 - ( 1 * 10 + ( 3 + 1 ) ) '.split(' ')))
-    exp = turn_normal_expr_to_internal_expr('1-(1-1)-(3-2+2-3)').split(' ')
-    exp2 = ' ( 1 + 1 )  ^  ( 1 + 1 ) '.split(' ')
-    print(exp, ':', ReversedPolishNotation(exp2))
+    exp2 = ' ( 1 + 1 )  ^  ( 1 - 1 ) '.split(' ')
+    print(':', ReversedPolishNotation(exp2))
     #print((trans_to_RPN(turn_normal_expr_to_internal_expr('1-(1-1)-(3-2+2-3)').split(' '))), 'exp')
-    print(Calculation('2 ^  ( 1 + 1 ) '))
+    #print(Calculation('2 ^  ( 1 + 1 ) '))
     #print(trans_to_RPN('1 - -4 - ( 101 - 2 ) '.split(' ')), 'exp2')
     #1 - -4 - ( 101 - 2 )
     #print(trans_to_RPN('9 + ( -7 + -2 )'.split(' ')))

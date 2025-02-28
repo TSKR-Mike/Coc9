@@ -2198,7 +2198,6 @@ def data_visualize_3d(window, clock):
     many_charts = pyghelpers.textYesNoDialog(window, (0, 300, 600, 300),
                                              'How many charts of each type do you want to draw',
                                              'many', "only one each type")
-
     try:
         charting_type_selector = CheckBox(8, ['line plots', 'scatter plots', 'wireframe', 'surface',
                                               'tri-surface(Not recommended)',
@@ -2219,14 +2218,15 @@ def data_visualize_3d(window, clock):
             message_window.browser("Choose an Excel file for the data's source", [('EXCEL files', '.xlsx')])
             file_name = message_window.file_name
             if file_name == '':
-                message_window.error("failed to process because of empty file name")
-                return
-            try:
-                file = ExcelMgr(file_name)
-                file_data = file.data
-            except Exception as e:
-                message_window.error('Failed to load data because of error:' + str(e))
+                message_window.error("failed to process because of empty file name.")
                 file_data = None
+            else:
+                try:
+                    file = ExcelMgr(file_name)
+                    file_data = file.data
+                except Exception as e:
+                    message_window.error('Failed to preload data because of error:' + str(e))
+                    file_data = None
             refresh_data = pyghelpers.textYesNoDialog(window, (0, 300, 600, 300),
                                                       'Do you want to refresh the data after each chart?',
                                                       'yes', "no")
@@ -2246,22 +2246,17 @@ def data_visualize_3d(window, clock):
                 try:
                     num = int(num)
                 except Exception:
-                    message_window.error("Can't turn " + str(num) + ' into an integer')
+                    message_window.error("Can't turn " + str(num) + ' into an integer, terminate.')
                     return
                 if num < 0:
-                    message_window.error("You can't draw negative charts!")
+                    message_window.error("You can't draw negative charts!Terminate.")
                     return
                 else:
                     for i in range(num):
                         chart_choices.append(charting_type_selector)
         else:
             chart_choices = charting_type_selector.clicked_choices
-        data_num = len(chart_choices)
-        charts_x_num = max([1, int(np.ceil(np.sqrt(data_num)))])
-        charts_y_num = max([1, int(np.ceil(data_num / charts_x_num))])
-        ax_index = 0
-        axs.append(fig.add_subplot(charts_x_num, charts_y_num, ax_index,projection='3d'))
-        ax_index += 1
+        axs.append(fig.add_subplot(projection='3d'))
         x_label = pyghelpers.textAnswerDialog(window, (0, 300, 1004, 300),
                                                             'Insert X label',
                                                             'OK', "Cancel")
@@ -2280,15 +2275,15 @@ def data_visualize_3d(window, clock):
                 x_data = loading_data(data_collecting_method, window, 'for x:' +
                                       ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
                                        'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data, file_data=file_data)
-                if x_data is None:message_window.error('No x data is selected!');continue
+                if x_data is None:message_window.error('No x data is selected!, skip this draw');continue
                 y_data = loading_data(data_collecting_method, window, 'for x:' +
                                       ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
                                        'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data, file_data=file_data)
-                if y_data is None: message_window.error('No y data is selected!');continue
+                if y_data is None: message_window.error('No y data is selected!, skip this draw');continue
                 z_data = loading_data(data_collecting_method, window, 'for x:' +
                                       ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
                                        'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data, file_data=file_data)
-                if z_data is None: message_window.error('No z data is selected!');continue
+                if z_data is None: message_window.error('No z data is selected!, skip this draw');continue
 
                 if not (len(x_data) == len(y_data) == len(z_data)):
                     message_window.error('The three datas do not have the same size:' + str(len(x_data)) + ',' + str(
@@ -2304,18 +2299,18 @@ def data_visualize_3d(window, clock):
                                       ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
                                        'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
                                       file_data=file_data)
-                if x_data is None: message_window.error('No x data is selected!');continue
+                if x_data is None: message_window.error('No x data is selected!Skip this draw');continue
                 y_data = loading_data(data_collecting_method, window, 'for y:' +
                                       ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
                                        'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
                                       file_data=file_data)
-                if y_data is None: message_window.error('No y data is selected!');continue
-                z_data = load_matrix(window,comments='z[shape:('+str(len(x_data))+','+str(len(y_data))+')]', data_collecting_method=data_collecting_method,
+                if y_data is None: message_window.error('No y data is selected!Skip this draw');continue
+                z_data = load_matrix(comments='z[shape:('+str(len(x_data))+','+str(len(y_data))+')]', data_collecting_method=data_collecting_method,
                                      req=(len(x_data), len(y_data)))
                 if z_data is None:
-                    message_window.error('No z data is selected!');continue
+                    message_window.error('No z data is selected!Skip this draw');continue
                 if len(z_data[0]) != len(x_data) or len(z_data) != len(y_data):
-                    message_window.error('got z data:('+str(len(z_data[0]))+','+str(len(z_data))+'),expect:('+str(len(x_data))+','+str(len(y_data))+')')
+                    message_window.error('got z data in shape:('+str(len(z_data[0]))+','+str(len(z_data))+'),expect:('+str(len(x_data))+','+str(len(y_data))+'),Skip this draw')
                     continue
 
                 z_data = np.array(z_data)
@@ -2325,31 +2320,77 @@ def data_visualize_3d(window, clock):
                     if curr_type == 2:
                         axs[-1].plot_wireframe(x_data, y_data, z_data)
                     elif curr_type == 3:
-                        axs[-1].plot_surface(x_data, y_data, z_data)
+                        try:
+                            axs[-1].plot_surface(x_data, y_data, z_data)
+                        except MemoryError:
+                            message_window.error("The memory of the system is not enough for the calculation!Consider closing other apps, run smaller data sets or change a computer.If you tried this but nothing works, the problem is out of Coc's control.Skip this draw")
+                            continue
                     elif curr_type == 7:
                         draw_colour_bar = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
                                                                             'how do you want to draw the colour bar',
                                                                             'Yes',
                                                                             "No")
-                        surf = axs[-1].contour(x_data, y_data, z_data)
+                        try:
+                            surf = axs[-1].contour(x_data, y_data, z_data)
+                        except:
+                            z_data += np.random.normal(0, 1e-8, z_data.shape)
+
+                            try:
+                                surf = axs[-1].contour(x_data, y_data, z_data)
+                                if draw_colour_bar:
+                                    fig.colorbar(surf, ax=axs[-1], shrink=0.5)
+                            except Exception as e:
+                                message_window.error('Failed to draw the contour with Error:'+str(e)+',skip this draw')
+                                continue
                         if draw_colour_bar:
                             fig.colorbar(surf, ax=axs[-1], shrink=0.5)
                 else:
                     x_data = x_data.flatten()
                     y_data = y_data.flatten()
                     z_data = z_data.flatten()
-                    axs[-1].plot_trisurf(x_data, y_data, z_data)
+                    try:
+                        axs[-1].plot_trisurf(x_data, y_data, z_data)
+                    except RuntimeError:
+                        #三角剖分失败
+                        message_window.warning('Failed to do triangulation calculation, retrying')
+                        x_data += np.random.normal(0, 1e-8, x_data.shape)
+                        y_data += np.random.normal(0, 1e-8, y_data.shape)
+                        points = np.column_stack((x_data, y_data))
+                        unique_points = np.unique(points, axis=0)
+                        x_data, y_data = unique_points[:, 0], unique_points[:, 1]
+
+                        try:
+                            axs[-1].plot_trisurf(x_data, y_data, z_data)
+                        except:
+                            Skip = message_window.question(question='Failed to draw the tri-surface.Do you want to use plot_surface,wire frame(Choose no), or just skip(Choose yes)?', title='Skip?')
+                            if Skip:continue
+                            else:
+                                surface = message_window.question('Select a type', 'Do you want to use plot_surface(Choose yes) or plot_wireframe(Choose no)')
+                                if surface:
+                                    try:
+                                        axs[-1].plot_surface(x_data, y_data, z_data)
+                                    except MemoryError:
+                                        message_window.error("The memory of the system is not enough for the calculation!Consider closing other apps, run smaller data sets or change a computer.If you tried this but nothing works, the problem is out of Coc's control.Skip this draw")
+                                        continue
+                                else:
+                                    axs[-1].plot_wireframe(x_data, y_data, z_data)
+
+                    except MemoryError:
+                        message_window.error("The memory of the system is not enough for the calculation!Consider closing other apps, run smaller data sets or change a computer.If you tried this but nothing works, the problem is out of Coc's control.Skip this draw")
+                        continue
+                    except:
+                        message_window.error('Unexpected error, skip this draw')
 
             elif curr_type == 5:
                 x_data = loading_data(data_collecting_method, window, 'for x data of the bar', reload_data=refresh_data,
                                       file_data=file_data)
-                if x_data is None: message_window.error('No x data is selected!');continue
+                if x_data is None: message_window.error('No x data is selected!, skip this draw');continue
                 y_data = loading_data(data_collecting_method, window, 'for y data of the bar', reload_data=refresh_data,
                                       file_data=file_data)
-                if y_data is None: message_window.error('No y data is selected!');continue
-                z_data = load_matrix(window, 'for the data part',data_collecting_method=data_collecting_method, req=(len(x_data), len(y_data)))
+                if y_data is None: message_window.error('No y data is selected!, skip this draw');continue
+                z_data = load_matrix('for the data part',data_collecting_method=data_collecting_method, req=(len(x_data), len(y_data)))
                 if z_data is None:
-                    message_window.error('No value is selected!');continue
+                    message_window.error('No value is selected!, skip this draw');continue
                 Index = 0
                 for y in y_data:
                     axs[-1].bar(x_data, z_data[Index], y, zdir='y')
@@ -2358,25 +2399,37 @@ def data_visualize_3d(window, clock):
 
 
             elif curr_type == 6:
-                x_data = loading_data(data_collecting_method, window, 'for x:quivers', reload_data=refresh_data,
+                x_data = loading_data(data_collecting_method, window, 'for x:' +
+                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
+                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
                                       file_data=file_data)
                 if x_data is None: message_window.error('No x data is selected!');continue
-                y_data = loading_data(data_collecting_method, window, 'for y:quivers', reload_data=refresh_data,
+                y_data = loading_data(data_collecting_method, window, 'for y:' +
+                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
+                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
                                       file_data=file_data)
                 if y_data is None: message_window.error('No y data is selected!');continue
-                z_data = loading_data(data_collecting_method, window, 'for z:quivers', reload_data=refresh_data,
+                z_data = loading_data(data_collecting_method, window, 'for z:' +
+                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
+                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
                                       file_data=file_data)
                 if z_data is None: message_window.error('No z data is selected!');continue
                 if not (len(x_data) == len(y_data) == len(z_data)):
                     message_window.error("Dimensions don't match:"+str(len(x_data))+','+str(y_data)+','+str(z_data))
 
-                u_data = loading_data(data_collecting_method, window, 'for u:quivers', reload_data=refresh_data,
+                u_data = loading_data(data_collecting_method, window, 'for u:' +
+                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
+                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
                                       file_data=file_data)
                 if u_data is None: message_window.error('No u data is selected!');continue
-                v_data = loading_data(data_collecting_method, window, 'for v:quivers', reload_data=refresh_data,
+                v_data = loading_data(data_collecting_method, window, 'for v:' +
+                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
+                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
                                       file_data=file_data)
                 if v_data is None: message_window.error('No v data is selected!');continue
-                w_data = loading_data(data_collecting_method, window, 'for z:quivers', reload_data=refresh_data,
+                w_data = loading_data(data_collecting_method, window, 'for z:' +
+                                      ['line plots', 'scatter plots', 'wireframe', 'surface', 'tri-surface',
+                                       'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
                                       file_data=file_data)
                 if w_data is None: message_window.error('No w data is selected!');continue
 
@@ -2391,8 +2444,7 @@ def data_visualize_3d(window, clock):
 
             if index != (len(chart_choices)-2):
                 if many_charts:
-                    axs.append(fig.add_subplot(charts_x_num, charts_y_num, ax_index, projection='3d'))
-                    ax_index += 1
+                    axs.append(fig.add_subplot(projection='3d'))
                     x_label = pyghelpers.textAnswerDialog(window, (0, 300, 1004, 300),
                                                           'Insert X label',
                                                           'OK', "Cancel")
