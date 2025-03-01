@@ -3,6 +3,8 @@ import time
 import pygame
 import pygwidgets
 from pygame.locals import *
+from scipy.integrate import dblquad
+from sympy import Integral
 
 from progress_bar import DotCircledProgressBar
 
@@ -27,42 +29,63 @@ def draw_all():
     backspace.draw()
     warning_text.draw()
 
+
 def get_number_key(event):
     # 获取修饰键状态（Shift, Ctrl, Alt 等）
     modifiers = pygame.key.get_mods()
 
     # 判断是否按下了 Shift
     shift_pressed = modifiers & pygame.KMOD_SHIFT
-    if shift_pressed:return
-    if event.key == pygame.K_0:return 0
-    elif event.key == pygame.K_1:return 1
-    elif event.key == pygame.K_2:return 2
-    elif event.key == pygame.K_3:return 3
-    elif event.key == pygame.K_4:return 4
-    elif event.key == pygame.K_5:return 5
-    elif event.key == pygame.K_6:return 6
-    elif event.key == pygame.K_7:return 7
-    elif event.key == pygame.K_8:return 8
-    elif event.key == pygame.K_9:return 9
+    if shift_pressed: return
+    if event.key == pygame.K_0:
+        return 0
+    elif event.key == pygame.K_1:
+        return 1
+    elif event.key == pygame.K_2:
+        return 2
+    elif event.key == pygame.K_3:
+        return 3
+    elif event.key == pygame.K_4:
+        return 4
+    elif event.key == pygame.K_5:
+        return 5
+    elif event.key == pygame.K_6:
+        return 6
+    elif event.key == pygame.K_7:
+        return 7
+    elif event.key == pygame.K_8:
+        return 8
+    elif event.key == pygame.K_9:
+        return 9
+
 
 def get_calcu_symbol_key(event):
-
     # 获取修饰键状态（Shift, Ctrl, Alt 等）
     modifiers = pygame.key.get_mods()
 
     # 判断是否按下了 Shift
     shift_pressed = modifiers & pygame.KMOD_SHIFT
-    if event.key == pygame.K_EQUALS and shift_pressed:return '+'
-    elif event.key == pygame.K_8 and shift_pressed:return '*'
-    elif event.key == pygame.K_9 and shift_pressed:return '('
-    elif event.key == pygame.K_0 and shift_pressed:return ')'
-    elif event.key == pygame.K_MINUS:return '-'
-    elif event.key == pygame.K_1 and shift_pressed:return '!'
-    elif event.key == pygame.K_6 and shift_pressed:return '^'
+    if event.key == pygame.K_EQUALS and shift_pressed:
+        return '+'
+    elif event.key == pygame.K_8 and shift_pressed:
+        return '*'
+    elif event.key == pygame.K_9 and shift_pressed:
+        return '('
+    elif event.key == pygame.K_0 and shift_pressed:
+        return ')'
+    elif event.key == pygame.K_MINUS:
+        return '-'
+    elif event.key == pygame.K_1 and shift_pressed:
+        return '!'
+    elif event.key == pygame.K_6 and shift_pressed:
+        return '^'
     else:
         key_name = pygame.key.name(event.key)
-        if key_name == '/':return '/'
-        elif key_name == '.':return '.'
+        if key_name == '/':
+            return '/'
+        elif key_name == '.':
+            return '.'
+
 
 def show_user_text():
     global texts, text, text_length_warned
@@ -137,6 +160,7 @@ try:
     loading.draw()
     import numpy as np
     import scipy
+
     loading.setValue('Loading dependencies...31% complete')
     loading.draw()
 
@@ -148,11 +172,11 @@ try:
     from buttoncenter import *
     import matplotlib.pyplot as plt
     import matplotlib
+
     matplotlib.use('WXagg')
     ax = plt.gca()
     loading.setValue('Loading dependencies...81% complete')
     loading.draw()
-
 
     from EventPyghelpers import textNumberDialogEventProgressing
     from complex import ComplexUi
@@ -162,7 +186,8 @@ try:
     loading.setValue('Loading dependencies...94% complete')
     loading.draw()
     ########################################################
-    from statistics import data_visualize_2d, Message_window, data_analyze, data_comparison, data_distribution, data_visualize_3d
+    from statistics import data_visualize_2d, Message_window, data_analyze, data_comparison, data_distribution, \
+        data_visualize_3d
     ######################################################
     from checkbox import CheckBox
     from progress_bar import windows_progress_bar
@@ -173,16 +198,17 @@ try:
 except ModuleNotFoundError as e:
     loading_obj.done()
     font = pygame.font.Font('fonts/JetBrainsMono-Light.ttf')
-    text = font.render('Failed to launch Coc because of a dependence can not be loaded:'+str(e).split("'")[1], True, (255, 0, 0))
-    text2 = font.render('Press any key to quit.', True,
+    text = font.render('Failed to launch Coc because of a dependence can not be loaded:' + str(e).split("'")[1], True,
                        (255, 0, 0))
+    text2 = font.render('Press any key to quit.', True,
+                        (255, 0, 0))
     break_ = False
     while True:
         window.fill((0, 191, 255))
         window.blit(text, (0, 0))
         window.blit(text2, (0, 40))
         pygame.display.update()
-        if break_:break
+        if break_: break
         for event in pygame.event.get():
             if (event.type == pygame.QUIT) or (event.type == pygame.KEYDOWN) or (event.type == pygame.MOUSEBUTTONDOWN):
                 break_ = True
@@ -191,7 +217,6 @@ except ModuleNotFoundError as e:
     pygame.quit()
     sys.exit(1)
 
-
 loading.setValue('Loading dependencies...100% complete')
 loading.draw()
 time.sleep(0.5)
@@ -199,8 +224,8 @@ pygame.font.init()
 loading_obj.done()
 """
 ----------------------------
-| version: 9.1             |
-| develop time: 2025-2-28  |
+| version: 9.2             |
+| develop time: 2025-3-1   |
 ----------------------------
 """
 
@@ -211,9 +236,12 @@ message_window = Message_window()
 xticks_angle = -45
 mode = 'DEG'
 functions = ["sin", "cos", "tan", 'arcsin', "arccos", "arctan", "log", "ln", "root", 'min']
-plt.rcParams['font.family'] = 'SimHei'; plt.rcParams['axes.unicode_minus'] = False
-ax.spines['top'].set_color('none'); ax.spines['right'].set_color('none')
-ax.spines['left'].set_position(('data', 0.5)); ax.spines['bottom'].set_position(('data', 0))
+plt.rcParams['font.family'] = 'SimHei'
+plt.rcParams['axes.unicode_minus'] = False
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_position(('data', 0.5))
+ax.spines['bottom'].set_position(('data', 0))
 plt.grid(True, linestyle="--", alpha=0.5)
 usr_notice = UsrNotice(window, (0, 0), 1004, 610)
 x = sympy.symbols('x')
@@ -228,7 +256,8 @@ line1 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 
                      window, 60, 60, 0, 92, 62, 0, font=font_path, font_size=18, callbacks=None)
 
 line2 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 16,
-                     ['(', ')', 'M', 'M+', 'Rad', 'Deg', 'sin', 'cos', 'tan', 'arcsin', 'arccos', 'arctan', '!', 'alog(x)', 'ln(x)', '(a)√(x)'], window, 60, 60, 0, 152, 62, 0, font=font_path, font_size=11,
+                     ['(', ')', 'M', 'M+', 'Rad', 'Deg', 'sin', 'cos', 'tan', 'arcsin', 'arccos', 'arctan', '!',
+                      'alog(x)', 'ln(x)', '(a)√(x)'], window, 60, 60, 0, 152, 62, 0, font=font_path, font_size=11,
                      callbacks=None)
 
 line3 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 7,
@@ -244,14 +273,17 @@ line4_2 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80)
                        , font=font_path, font_size=14, callbacks=None)
 
 line5 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 8,
-                     ['limit', 'clean memory', 'copy answer', 'data analyze', 'distribution', 'comparison', 'matrix', 'complex'], window, 120, 60, 0, 332, 124, 0, font=font_path,
+                     ['limit', 'clean memory', 'copy answer', 'data analyze', 'distribution', 'comparison', 'matrix',
+                      'complex'], window, 120, 60, 0, 332, 124, 0, font=font_path,
                      font_size=14, callbacks=None)
 
 line6 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 8,
-                     ['vector', 'divisors', 'prime factors', 'GCD', '<-(answer)', '->(answer)', 'head(answer)','No-mouse:OFF'], window, 120, 60, 0, 392, 124, 0, font=font_path,
+                     ['vector', 'divisors', 'prime factors', 'GCD', '<-(answer)', '->(answer)', 'head(answer)',
+                      'No-mouse:OFF'], window, 120, 60, 0, 392, 124, 0, font=font_path,
                      font_size=14, callbacks=None)
 line7 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 5,
-                     ['paste', 'user guide', 'A(n,m)', 'C(n,m)', 'copy formula'], window, 120, 60, 0, 452, 124, 0, font=font_path,
+                     ['paste', 'user guide', 'A(n,m)', 'C(n,m)', 'copy formula'], window, 120, 60, 0, 452, 124, 0,
+                     font=font_path,
                      font_size=14, callbacks=None)
 
 answer = ''
@@ -266,9 +298,10 @@ right = 0
 no_mouse = False
 MEMORY = ('', '')
 point = True
-matrix_saved_data, complex_saved_data, vector_saved_data = ({}, [], None),({}, [], None),({}, [], None)
+matrix_saved_data, complex_saved_data, vector_saved_data = ({}, [], None), ({}, [], None), ({}, [], None)
 func = 0
-mode_text = pygwidgets.DisplayText(window, (970, 65), mode, textColor=(100, 100, 100), backgroundColor=(255, 255, 255), fontName=font_path)
+mode_text = pygwidgets.DisplayText(window, (970, 65), mode, textColor=(100, 100, 100), backgroundColor=(255, 255, 255),
+                                   fontName=font_path)
 draw_all()
 pygame.display.update()
 text_length_warned = False
@@ -341,8 +374,11 @@ while True:
                         answer_start_index += 1
                     answertext.setValue(_[answer_start_index:66 + answer_start_index])
             elif event.key == pygame.K_DELETE:
-                texts = ''; mathtext = ''
-                answer = ''; point = True; operator = True
+                texts = '';
+                mathtext = ''
+                answer = '';
+                point = True;
+                operator = True
             num = get_number_key(event)
             if num is not None:
                 operator = False
@@ -453,7 +489,7 @@ while True:
                     right -= 1
                 mathtext = mathtext[0:-1]
 
-                while (len(mathtext) != 0)and(mathtext[-1] == ' '):
+                while (len(mathtext) != 0) and (mathtext[-1] == ' '):
                     mathtext = mathtext[0:-1]
 
                 if len(mathtext) == 0:
@@ -487,7 +523,8 @@ while True:
                                           height=92)
         elif len(texts) <= 112:
             # 双行显示
-            text = pygwidgets.DisplayText(window, (0, 0), texts[0:56], font_path, 30, 1004, backgroundColor=(255, 255, 255),
+            text = pygwidgets.DisplayText(window, (0, 0), texts[0:56], font_path, 30, 1004,
+                                          backgroundColor=(255, 255, 255),
                                           height=31)
             text2 = pygwidgets.DisplayText(window, (0, 31), texts[56:112], font_path, 30, 1004,
                                            backgroundColor=(255, 255, 255),
@@ -526,9 +563,10 @@ while True:
         if len(answer) > 65:
             #print('over')
             # the answer passes the display limit
-            warning_text.setValue('The answer has '+str(len(answer))+' digits, current showing:'+str(answer_start_index)+'~'+str(65+answer_start_index))
+            warning_text.setValue('The answer has ' + str(len(answer)) + ' digits, current showing:' + str(
+                answer_start_index) + '~' + str(65 + answer_start_index))
             _ = answer
-            answertext.setValue(_[answer_start_index:66+answer_start_index])
+            answertext.setValue(_[answer_start_index:66 + answer_start_index])
         else:
             warning_text.setValue('')
         draw_all()
@@ -543,8 +581,11 @@ while True:
                     operator = False
                 else:
                     if INDEX == 15:
-                        texts = ''; mathtext = ''
-                        answer = ''; point = True; operator = True
+                        texts = '';
+                        mathtext = ''
+                        answer = '';
+                        point = True;
+                        operator = True
                     elif INDEX == 10:
                         texts += '+'
                         point = True
@@ -611,7 +652,7 @@ while True:
                 event_proceeded = True
                 break
 
-        if event_proceeded:continue
+        if event_proceeded: continue
 
         for i in line2.Buttons:
             INDEX = line2.Buttons.index(i)
@@ -702,7 +743,7 @@ while True:
                 event_proceeded = True
                 break
 
-        if event_proceeded:continue
+        if event_proceeded: continue
 
         for i in line3.Buttons:
             INDEX = line3.Buttons.index(i)
@@ -730,7 +771,7 @@ while True:
                     else:
                         mathtext += ' ^ '
                     operator = True
-                elif INDEX == 4:
+                elif INDEX == 4: # single integral
                     formula = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
                                                           'input you formula here( y/z = f(x /x,y)=', 'OK',
                                                           'CANCEL', backgroundColor=(90, 90, 150),
@@ -746,16 +787,17 @@ while True:
                         answer = ''
                     else:
                         answertext.setValue('')
-                        definite_integral = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'TYPE', 'definite integral',
-                                                            'indefinite integral')  # None表示只有一个选项
+                        definite_integral = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'TYPE',
+                                                                       'definite integral',
+                                                                       'indefinite integral')
                         x = sympy.symbols('x')
                         y = sympy.symbols('y')
                         z = sympy.symbols('z')
 
                         if not definite_integral:  # 不定积分
                             to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                                 'to', 'x  (dx)',
-                                                                 'y  (dy)')  # None表示只有一个选项
+                                                              'to', 'x  (dx)',
+                                                              'y  (dy)')
                             if not to_x:  # 对y积分
                                 Answer = sympy.integrate(sympy.sympify(formula), y)
                                 answertext.setValue(Answer)
@@ -765,46 +807,78 @@ while True:
                                 answertext.setValue(Answer)
                                 answer = str(Answer)
                         else:
+                            no_infinity = message_window.question('select integral type',
+                                                                         'Do you want to do the normal integral(no Infinity included)')
+
                             to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                                 'to', 'x  (dx)',
-                                                                 'y  (dy)')  # None表示只有一个选项
+                                                                  'to', 'x  (dx)',
+                                                                  'y  (dy)')
+
+                            # choose the max
+                            if no_infinity:
+                                integral_max = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                           'input maximum', 'OK',
+                                                                           'cancel', backgroundColor=(90, 90, 150),
+                                                                           promptTextColor=(0, 0, 0),
+                                                                           inputTextColor=(0, 0, 0))
+                            else:
+                                have_infinity = message_window.question('select maximum type',
+                                                                        'Do you want to input the normal max(no Infinity included)')
+                                if have_infinity:
+                                    positive_infinity = message_window.question('select maximum type',
+                                                                                'Do you want to input a positive infinity(No means negative)')
+
+                                    integral_max = sympy.oo if positive_infinity else -sympy.oo
+                                else:
+                                    integral_max = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                               'input maximum', 'OK',
+                                                                               'cancel',
+                                                                               backgroundColor=(90, 90, 150),
+                                                                               promptTextColor=(0, 0, 0),
+                                                                               inputTextColor=(0, 0, 0))
+                            if integral_max is None:
+                                message_window.error('No number is given!')
+                                continue
+
+                            # choose the min
+                            if no_infinity:
+                                integral_min = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                           'input minimum', 'OK',
+                                                                           'cancel', backgroundColor=(90, 90, 150),
+                                                                           promptTextColor=(0, 0, 0),
+                                                                           inputTextColor=(0, 0, 0))
+                            else:
+                                have_infinity = message_window.question('select minium type',
+                                                                        'Do you want to input the normal max(no Infinity included)')
+                                if have_infinity:
+                                    positive_infinity = message_window.question('select minium type',
+                                                                                'Do you want to input a positive infinity(No means negative)')
+
+                                    integral_min = sympy.oo if positive_infinity else -sympy.oo
+                                else:
+                                    integral_min = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                               'input minium', 'OK',
+                                                                               'cancel',
+                                                                               backgroundColor=(90, 90, 150),
+                                                                               promptTextColor=(0, 0, 0),
+                                                                               inputTextColor=(0, 0, 0))
+                            if integral_min is None:
+                                message_window.error('No numbers is given')
+                                continue
                             if not to_x:  # 对y积分
-                                out1 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input maximum', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out1:
-                                    continue
-                                out2 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input minimum', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out2:
-                                    continue
-                                Answer = sympy.integrate(sympy.sympify(formula), (y, float(out2), float(out1)))
-                                answertext.setValue(Answer)
-                                answer = str(Answer)
+
+                                Answer = sympy.integrate(sympy.sympify(formula), (y, integral_min, integral_max))
                             else:  # 对x积分
-                                out1 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input maximum', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out1:
-                                    continue
-                                out2 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input minimum', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out2:
-                                    continue
-                                Answer = sympy.integrate(sympy.sympify(formula), (x, float(out2), float(out1)))
-                                answertext.setValue(Answer)
-                                answer = str(Answer)
-                elif INDEX == 5:
+                                Answer = sympy.integrate(sympy.sympify(formula), (x, integral_min, integral_max))
+
+                            if isinstance(Answer, sympy.Integral):
+                                message_window.warning('Failed to get the symbol integral of:'+formula+', the system will return a numeric value')
+                                Answer = str(Answer.evalf())
+
+                            answertext.setValue(str(Answer))
+                            answer = str(Answer)
+
+                elif INDEX == 5: # double integral
                     formula = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
                                                           'input you formula here( y/z = f(x /x,y)=', 'OK',
                                                           'CANCEL', backgroundColor=(90, 90, 150),
@@ -819,22 +893,23 @@ while True:
                     answertext.setValue('')
                     mathtext = ''
                     texts = ''
-                    definite_integral = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'TYPE', 'definite integral',
-                                                        'indefinite integral')  # None表示只有一个选项
+                    definite_integral = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'TYPE',
+                                                                   'definite integral',
+                                                                   'indefinite integral')
                     x = sympy.symbols('x')
                     y = sympy.symbols('y')
                     z = sympy.symbols('z')
-
-                    if definite_integral:  # 不定积分
+                    break_integral = False
+                    if not definite_integral:  # 不定积分
 
                         to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                             'to', 'x  (dx)',
-                                                             'y  (dy)')  # None表示只有一个选项
+                                                          'to', 'x  (dx)',
+                                                          'y  (dy)')
                         if not to_x:  # 对y积分
                             Answer = sympy.integrate(sympy.sympify(formula), y)
                             to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                                 'to', 'x  (dx)',
-                                                                 'y  (dy)')  # None表示只有一个选项
+                                                              'to', 'x  (dx)',
+                                                              'y  (dy)')
                             if not to_x:  # 对y积分
                                 Answer = sympy.integrate(sympy.sympify(Answer), y)
 
@@ -845,8 +920,8 @@ while True:
                         else:  # 对x积分
                             Answer = sympy.integrate(sympy.sympify(formula), x)
                             to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                                 'to', 'x  (dx)',
-                                                                 'y  (dy)')  # None表示只有一个选项
+                                                              'to', 'x  (dx)',
+                                                              'y  (dy)')
                             if not to_x:  # 对y积分
                                 Answer = sympy.integrate(sympy.sympify(Answer), y)
 
@@ -855,120 +930,95 @@ while True:
                             answertext.setValue(Answer)
                             answer = str(Answer)
                     else:
-                        to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                             'to', 'x  (dx)',
-                                                             'y  (dy)')  # None表示只有一个选项
-                        if not to_x:  # 对y积分
-                            out1 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                               'input maximum(out)', 'OK',
-                                                               'cancel', backgroundColor=(90, 90, 150),
-                                                               promptTextColor=(0, 0, 0),
-                                                               inputTextColor=(0, 0, 0))
-                            if not out1:
-                                continue
-                            out2 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                               'input minimum(out)', 'OK',
-                                                               'cancel', backgroundColor=(90, 90, 150),
-                                                               promptTextColor=(0, 0, 0),
-                                                               inputTextColor=(0, 0, 0))
-                            if not out2:
-                                continue
-                            Answer = sympy.integrate(sympy.sympify(formula), (y, out2, out1))
+                        no_infinity = message_window.question('select integral type',
+                                                              'Do you want to do the normal integral(no Infinity included)')
+                        integral_list = []
+                        for i in range(2):
                             to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                                 'to', 'x  (dx)',
-                                                                 'y  (dy)')  # None表示只有一个选项
-                            if not to_x:  # 对y积分
-                                out1 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input maximum(mid)', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out1:
-                                    continue
-                                out2 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input minimum(mid)', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out2:
-                                    continue
-                                Answer = sympy.integrate(sympy.sympify(formula), (y, out2, out1))
-                                answertext.setValue(Answer)
-                                answer = str(Answer)
-                            else:  # 对x积分
-                                out1 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input maximum(mid)', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out1:
-                                    continue
-                                out2 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input minimum(mid)', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out2:
-                                    continue
-                                Answer = sympy.integrate(sympy.sympify(formula), (x, out2, out1))
-                                answertext.setValue(Answer)
-                                answer = str(Answer)
-                        else:  # 对x积分
-                            out1 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                               'input maximum(out)', 'OK',
-                                                               'cancel', backgroundColor=(90, 90, 150),
-                                                               promptTextColor=(0, 0, 0),
-                                                               inputTextColor=(0, 0, 0))
-                            if not out1:
-                                continue
-                            out2 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                               'input minimum(out)', 'OK',
-                                                               'cancel', backgroundColor=(90, 90, 150),
-                                                               promptTextColor=(0, 0, 0),
-                                                               inputTextColor=(0, 0, 0))
-                            if not out2:
-                                continue
-                            Answer = sympy.integrate(sympy.sympify(formula), (x, out2, out1))
-                            to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                                 'to', 'x  (dx)',
-                                                                 'y  (dy)')  # None表示只有一个选项
-                            if not to_x:  # 对y积分
-                                out1 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input maximum(mid)', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out1:
-                                    continue
-                                out2 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input minimum(mid)', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out2:
-                                    continue
-                                Answer = sympy.integrate(sympy.sympify(formula), (y, out2, out1))
-                                answertext.setValue(Answer)
-                                answer = str(Answer)
-                            else:  # 对x积分
-                                out1 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input maximum(mid)', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out1:
-                                    continue
-                                out2 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                                   'input minimum(mid)', 'OK',
-                                                                   'cancel', backgroundColor=(90, 90, 150),
-                                                                   promptTextColor=(0, 0, 0),
-                                                                   inputTextColor=(0, 0, 0))
-                                if not out2:
-                                    continue
-                                Answer = sympy.integrate(sympy.sympify(Answer), (x, out2, out1))
-                                answertext.setValue(Answer)
-                                answer = str(Answer)
-                elif INDEX == 6:
+                                                              'to', 'x  (dx)',
+                                                              'y  (dy)')
+                            # choose the max
+                            if no_infinity:
+                                integral_max = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                           'input maximum', 'OK',
+                                                                           'cancel', backgroundColor=(90, 90, 150),
+                                                                           promptTextColor=(0, 0, 0),
+                                                                           inputTextColor=(0, 0, 0))
+                            else:
+                                have_infinity = message_window.question('select maximum type',
+                                                                        'Do you want to input the normal max(no Infinity included)')
+                                if have_infinity:
+                                    positive_infinity = message_window.question('select maximum type',
+                                                                                'Do you want to input a positive infinity(No means negative)')
+
+                                    integral_max = sympy.oo if positive_infinity else -sympy.oo
+                                else:
+                                    integral_max = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                               'input maximum', 'OK',
+                                                                               'cancel',
+                                                                               backgroundColor=(90, 90, 150),
+                                                                               promptTextColor=(0, 0, 0),
+                                                                               inputTextColor=(0, 0, 0))
+                            if integral_max is None:
+                                message_window.error('No numbers is given!')
+                                break_integral = True
+                                break
+
+                            # choose the min
+                            if no_infinity:
+                                integral_min = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                           'input minimum', 'OK',
+                                                                           'cancel', backgroundColor=(90, 90, 150),
+                                                                           promptTextColor=(0, 0, 0),
+                                                                           inputTextColor=(0, 0, 0))
+                            else:
+                                have_infinity = message_window.question('select minium type',
+                                                                        'Do you want to input the normal max(no Infinity included)')
+                                if have_infinity:
+                                    positive_infinity = message_window.question('select minium type',
+                                                                                'Do you want to input a positive infinity(No means negative)')
+
+                                    integral_min = sympy.oo if positive_infinity else -sympy.oo
+                                else:
+                                    integral_min = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                               'input minium', 'OK',
+                                                                               'cancel',
+                                                                               backgroundColor=(90, 90, 150),
+                                                                               promptTextColor=(0, 0, 0),
+                                                                               inputTextColor=(0, 0, 0))
+                            if integral_min is None:
+                                message_window.error('No numbers is given')
+                                break_integral = True
+                                break
+                            integral_list.append(x if to_x else y)
+                            integral_list.append(integral_min)
+                            integral_list.append(integral_max)
+
+                        if break_integral:continue
+                        # the first layer of integral
+                        if integral_list[0]:# to x
+                            Answer = sympy.integrate(sympy.sympify(formula), (x, integral_list[1], integral_list[2]))
+                        else: # to y
+                            Answer = sympy.integrate(sympy.sympify(formula), (y, integral_list[1], integral_list[2]))
+
+                        # the second layer of the integral
+                        if integral_list[3]: # to x
+                            Answer = sympy.integrate(sympy.sympify(Answer),
+                                                         (x, integral_list[4], integral_list[5]))
+                        else: # to y
+                            Answer = sympy.integrate(sympy.sympify(Answer),
+                                                         (y, integral_list[4], integral_list[5]))
+
+
+
+                        if isinstance(Answer, sympy.Integral):
+                            message_window.warning(
+                                'Failed to get the symbol integral of:' + formula + ', the system will return a numeric value')
+                            Answer = str(Answer.evalf())
+                        answertext.setValue(str(Answer))
+                        answer = str(Answer)
+
+                elif INDEX == 6: # triple integral
                     integrate_list = []
                     formula = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
                                                           'input you formula here( y/z = f(x /x,y)=', 'OK',
@@ -982,15 +1032,17 @@ while True:
                         continue
 
                     answertext.setValue('')
-                    definite_integral = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'TYPE', 'definite integral',
-                                                        'indefinite integral')  # None表示只有一个选项
+                    definite_integral = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'TYPE',
+                                                                   'definite integral',
+                                                                   'indefinite integral')
                     x = sympy.symbols('x')
                     y = sympy.symbols('y')
                     z = sympy.symbols('z')
+                    break_integral = False
                     if not definite_integral:
-                        for i2 in range(3):
+                        for index_ in range(3):
                             to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'to', 'x  (dx)',
-                                                                 'y  (dy)')  # None表示只有一个选项
+                                                              'y  (dy)')
                             integrate_list.append(to_x)
                         if integrate_list[0]:  # 对x积分
                             Answer = sympy.integrate(sympy.sympify(formula), x)
@@ -1004,40 +1056,87 @@ while True:
                         answertext.setValue(Answer)
                         answer = str(Answer)
                     else:
+                        no_infinity = message_window.question('select integral type',
+                                                              'Do you want to do the normal integral(no Infinity included)')
                         agreements = []
-                        for i2 in range(3):
+                        for index_ in range(3):
+
                             to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'to', 'x  (dx)'
-                                                              , 'y  (dy)')  # None表示只有一个选项
+                                                              , 'y  (dy)')
                             integrate_list.append(to_x)
-                            out1 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                               'input maximum(from outside to inside)', 'OK',
-                                                               'cancel', backgroundColor=(90, 90, 150),
-                                                               promptTextColor=(0, 0, 0),
-                                                               inputTextColor=(0, 0, 0))
-                            if not out1:
-                                continue
-                            agreements.append(out1)
-                            out1 = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
-                                                               'input minimum(from outside to inside)', 'OK',
-                                                               'cancel', backgroundColor=(90, 90, 150),
-                                                               promptTextColor=(0, 0, 0),
-                                                               inputTextColor=(0, 0, 0))
-                            if not out1:
-                                continue
-                            agreements.append(out1)
-                        Answer = sympy.integrate(sympy.sympify(formula), (x, agreements[1], agreements[0]))
+                            # choose the max
+                            if no_infinity:
+                                integral_max = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                           'input maximum', 'OK',
+                                                                           'cancel', backgroundColor=(90, 90, 150),
+                                                                           promptTextColor=(0, 0, 0),
+                                                                           inputTextColor=(0, 0, 0))
+                            else:
+                                have_infinity = message_window.question('select maximum type',
+                                                                        'Do you want to input the normal max(no Infinity included)')
+                                if have_infinity:
+                                    positive_infinity = message_window.question('select maximum type',
+                                                                                'Do you want to input a positive infinity(No means negative)')
+
+                                    integral_max = sympy.oo if positive_infinity else -sympy.oo
+                                else:
+                                    integral_max = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                               'input maximum', 'OK',
+                                                                               'cancel',
+                                                                               backgroundColor=(90, 90, 150),
+                                                                               promptTextColor=(0, 0, 0),
+                                                                               inputTextColor=(0, 0, 0))
+                            if integral_max is None:
+                                message_window.error('No numbers is given!')
+                                break_integral = True
+                                break
+                            agreements.append(integral_max)
+                            # choose the min
+                            if no_infinity:
+                                integral_min = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                           'input minimum', 'OK',
+                                                                           'cancel', backgroundColor=(90, 90, 150),
+                                                                           promptTextColor=(0, 0, 0),
+                                                                           inputTextColor=(0, 0, 0))
+                            else:
+                                have_infinity = message_window.question('select minium type',
+                                                                        'Do you want to input the normal max(no Infinity included)')
+                                if have_infinity:
+                                    positive_infinity = message_window.question('select minium type',
+                                                                                'Do you want to input a positive infinity(No means negative)')
+
+                                    integral_min = sympy.oo if positive_infinity else -sympy.oo
+                                else:
+                                    integral_min = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
+                                                                               'input minium', 'OK',
+                                                                               'cancel',
+                                                                               backgroundColor=(90, 90, 150),
+                                                                               promptTextColor=(0, 0, 0),
+                                                                               inputTextColor=(0, 0, 0))
+                            if integral_min is None:
+                                message_window.error('No numbers is given')
+                                break_integral = True
+                                break
+                            agreements.append(integral_min)
+                        if break_integral:continue
+
+                        Answer = sympy.integrate(sympy.sympify(formula), (agreements[0], agreements[2], agreements[1]))
                         if len(agreements) == 6:
-                            for i2 in range(2):
+                            for index_ in range(2):
                                 Answer = sympy.integrate(sympy.sympify(Answer),
-                                                         (x, agreements[i2 + 3], agreements[i2 + 2]))
+                                                         (agreements[index_ + 2], agreements[index_ + 4], agreements[index_ + 3]))
                         else:
                             Answer = 'ERROR'
+                        if isinstance(Answer, Integral):
+                            message_window.warning(
+                                'Failed to get the symbol integral of:' + formula + ', the system will return a numeric value')
+                            Answer = str(Answer.evalf())
                         answertext.setValue(Answer)
                         answer = str(Answer)
                 event_proceeded = True
                 break
 
-        if event_proceeded:continue
+        if event_proceeded: continue
 
         for i in line4_1.Buttons:
             INDEX = line4_1.Buttons.index(i)
@@ -1055,10 +1154,11 @@ while True:
                         continue
                     answertext.setValue('')
                     num = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
-                                                      'how many times do you want to differential at all',[],[], 'OK',
-                                                      'CANCEL', backgroundColor=(90, 90, 150),
-                                                      promptTextColor=(0, 0, 0),
-                                                      inputTextColor=(0, 0, 0))
+                                                           'how many times do you want to differential at all', [], [],
+                                                           'OK',
+                                                           'CANCEL', backgroundColor=(90, 90, 150),
+                                                           promptTextColor=(0, 0, 0),
+                                                           inputTextColor=(0, 0, 0))
 
                     if num == 0 or (num is None):
                         continue
@@ -1104,36 +1204,38 @@ while True:
 
                     ploter = True
                     choise3 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
-                                                          'how many line(s) do you want to draw?',[],[], 'OK',
-                                                          'CANCEL', backgroundColor=(90, 90, 150),
-                                                          promptTextColor=(0, 0, 0),
-                                                          inputTextColor=(0, 0, 0), allow_float=False, allow_negative=False)
+                                                               'how many line(s) do you want to draw?', [], [], 'OK',
+                                                               'CANCEL', backgroundColor=(90, 90, 150),
+                                                               promptTextColor=(0, 0, 0),
+                                                               inputTextColor=(0, 0, 0), allow_float=False,
+                                                               allow_negative=False)
 
                     if choise3 is None or choise3 < 1:
                         continue
                     x1 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
-                                                     'max x', [],[],'OK',
-                                                     'CANCEL', backgroundColor=(90, 90, 150),
-                                                     promptTextColor=(0, 0, 0),
-                                                     inputTextColor=(0, 0, 0))
-                    if x1 is None:message_window.error('no value is given');continue
+                                                          'max x', [], [], 'OK',
+                                                          'CANCEL', backgroundColor=(90, 90, 150),
+                                                          promptTextColor=(0, 0, 0),
+                                                          inputTextColor=(0, 0, 0))
+                    if x1 is None: message_window.error('no value is given');continue
                     x2 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
-                                                     'min x', [],[],'OK', 'CANCEL', backgroundColor=(90, 90, 150),
-                                                     promptTextColor=(0, 0, 0),
-                                                     inputTextColor=(0, 0, 0))
-                    if x2 is None:message_window.error('no value is given');continue
+                                                          'min x', [], [], 'OK', 'CANCEL',
+                                                          backgroundColor=(90, 90, 150),
+                                                          promptTextColor=(0, 0, 0),
+                                                          inputTextColor=(0, 0, 0))
+                    if x2 is None: message_window.error('no value is given');continue
                     y1 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
-                                                     'max y', [],[],'OK',
-                                                     'CANCEL', backgroundColor=(90, 90, 150),
-                                                     promptTextColor=(0, 0, 0),
-                                                     inputTextColor=(0, 0, 0))
-                    if y1 is None:message_window.error('no value is given');continue
+                                                          'max y', [], [], 'OK',
+                                                          'CANCEL', backgroundColor=(90, 90, 150),
+                                                          promptTextColor=(0, 0, 0),
+                                                          inputTextColor=(0, 0, 0))
+                    if y1 is None: message_window.error('no value is given');continue
                     y2 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
-                                                     'min y', [],[],'OK',
-                                                     'CANCEL', backgroundColor=(90, 90, 150),
-                                                     promptTextColor=(0, 0, 0),
-                                                     inputTextColor=(0, 0, 0))
-                    if y2 is None:message_window.error('no value is given');continue
+                                                          'min y', [], [], 'OK',
+                                                          'CANCEL', backgroundColor=(90, 90, 150),
+                                                          promptTextColor=(0, 0, 0),
+                                                          inputTextColor=(0, 0, 0))
+                    if y2 is None: message_window.error('no value is given');continue
 
                     _x = np.linspace(float(x2), float(x1), 1000)
                     _xs = []
@@ -1176,10 +1278,10 @@ while True:
                                 y_val = _y[0].subs(x, d)
                                 _ys.append(y_val)
                             else:
-                                for i2 in range(len(_y)):
-                                    y_val = _y[i2].subs(x, d)
+                                for index_ in range(len(_y)):
+                                    y_val = _y[index_].subs(x, d)
                                     _ys.append(y_val)
-                                    if i2 > 0:
+                                    if index_ > 0:
                                         x_value = d
                                         _xs.append(x_value)
                             bar.update_time(e + 1 + c * 1000)
@@ -1212,8 +1314,8 @@ while True:
                         plt.show()
                 elif INDEX == 2:  # data visualize
                     visualize_2d = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                                        'Select the type of visualize',
-                                                                        '2D', "3D")
+                                                              'Select the type of visualize',
+                                                              '2D', "3D")
                     if visualize_2d:
                         data_visualize_2d(window, clock)
                     else:
@@ -1221,7 +1323,7 @@ while True:
                 event_proceeded = True
                 break
 
-        if event_proceeded:continue
+        if event_proceeded: continue
 
         for i in line4_2.Buttons:
             INDEX = line4_2.Buttons.index(i)
@@ -1265,7 +1367,7 @@ while True:
                         for current, index in zip(all_formulas, range(len(all_formulas))):
                             if '=' in current:
                                 left_part, right_part = current.split('=')[0], current.split('=')[1]
-                                all_formulas[index] = '('+left_part+')-(' + right_part + ')'
+                                all_formulas[index] = '(' + left_part + ')-(' + right_part + ')'
                         symbols = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
                                                               'input the symbol(s) that you use in the formula:' + str(
                                                                   formula) + ',split with ";"',
@@ -1276,7 +1378,7 @@ while True:
                         symbols = symbols.split(';')
                         symbols = [i for i in symbols if i is not None]
                         try:
-                            symbols_used = [sympy.symbols(i) for i in symbols]
+                            symbols_used = [sympy.Symbol(i) for i in symbols]
                             simplified_formula = [sympy.sympify(i) for i in all_formulas]
                             answers = sympy.solve(simplified_formula, symbols_used, dict=True)
                             answertext.setValue(str(answers))
@@ -1289,7 +1391,7 @@ while True:
                 event_proceeded = True
                 break
 
-        if event_proceeded:continue
+        if event_proceeded: continue
 
         for i in line5.Buttons:
             INDEX = line5.Buttons.index(i)
@@ -1314,29 +1416,33 @@ while True:
                         symbols = sympy.symbols(symbols)
                         limit = 'None'
                         try:
-                            no_infinity_limits = message_window.question('select limit type', 'Do you want to do the normal limit(no Infinity included)')
+                            no_infinity_limits = message_window.question('select limit type',
+                                                                         'Do you want to do the normal limit(no Infinity included)')
                             if no_infinity_limits:
                                 limit = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
-                                                                    'input the limit that you use in the formula:' + str(
-                                                                        formula) + '(' + str(symbols) + ')',
-                                                                    [], [], 'OK',
-                                                                    'CANCEL', backgroundColor=(90, 90, 150),
-                                                                    promptTextColor=(0, 0, 0),
-                                                                    inputTextColor=(0, 0, 0))
+                                                                         'input the limit that you use in the formula:' + str(
+                                                                             formula) + '(' + str(symbols) + ')',
+                                                                         [], [], 'OK',
+                                                                         'CANCEL', backgroundColor=(90, 90, 150),
+                                                                         promptTextColor=(0, 0, 0),
+                                                                         inputTextColor=(0, 0, 0))
                                 if limit is None:
-                                    message_window.error('no limit is given');break
-                                direction = CheckBox(3, ['+', '-', '+/-'], 1, window, clock, first_x=120, first_y=30, each_add_x=0, each_add_y=20)
+                                    message_window.error('no limit is given')
+                                    break
+                                direction = CheckBox(3, ['+', '-', '+/-'], 1, window, clock, first_x=120, first_y=30,
+                                                     each_add_x=0, each_add_y=20)
 
                                 simplified_formula = sympy.sympify(formula)
                                 if type(direction.clicked_choices) == str or direction.clicked_choices == []:
                                     answers = sympy.limit(simplified_formula, symbols, limit)
-                                else :
-                                    answers = sympy.limit(simplified_formula, symbols, limit, ['+', '-', '+-'][direction.clicked_choices[0]])
+                                else:
+                                    answers = sympy.limit(simplified_formula, symbols, limit,
+                                                          ['+', '-', '+-'][direction.clicked_choices[0]])
                             else:
                                 pos_inf = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                                                    'What infinity do you want?',
-                                                                                    'Postive(+) Infinity',
-                                                                                    "Negative(-) Infinity")
+                                                                     'What infinity do you want?',
+                                                                     'Postive(+) Infinity',
+                                                                     "Negative(-) Infinity")
                                 simplified_formula = sympy.sympify(formula)
                                 if pos_inf:
                                     answers = sympy.limit(simplified_formula, symbols, sympy.oo)
@@ -1371,33 +1477,39 @@ while True:
                     matrix_shower = MatrixUi(window, clock, (0, 0), 1004, 610, all_data=matrix_saved_data)
                     matrix_saved_data = matrix_shower.draw()
                 elif INDEX == 7:
-                    complex_shower = ComplexUi(window, clock, (0, 0), 1004, 610, all_data=complex_saved_data, no_mouse=no_mouse)
+                    complex_shower = ComplexUi(window, clock, (0, 0), 1004, 610, all_data=complex_saved_data,
+                                               no_mouse=no_mouse)
                     complex_saved_data = complex_shower.draw()
                 event_proceeded = True
                 break
 
-        if event_proceeded:continue
+        if event_proceeded: continue
 
         for i in line6.Buttons:
             if i.handleEvent(event):
                 event_proceeded = True
                 INDEX = line6.Buttons.index(i)
                 if INDEX == 0:
-                    vector_shower = VectorUi(window, clock, (0, 0), 1004, 610, all_data=vector_saved_data, no_mouse=no_mouse)
+                    vector_shower = VectorUi(window, clock, (0, 0), 1004, 610, all_data=vector_saved_data,
+                                             no_mouse=no_mouse)
                     vector_saved_data = vector_shower.draw()
                 elif INDEX == 1:
-                    num = textNumberDialogEventProgressing(window, (0, 0, 1004, 190), 'input the number that you want to get the divisors',[],[],
+                    num = textNumberDialogEventProgressing(window, (0, 0, 1004, 190),
+                                                           'input the number that you want to get the divisors', [], [],
                                                            'OK', 'CANCEL', backgroundColor=(90, 90, 150),
-                                                         promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0), allow_float=False, allow_negative=False)
+                                                           promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0),
+                                                           allow_float=False, allow_negative=False)
                     if num is None:
                         message_window.error('exit because of empty input')
                         break
                     answertext.setValue(str(sympy.divisors(num)))
                 elif INDEX == 2:
                     num = textNumberDialogEventProgressing(window, (0, 0, 1004, 190),
-                                                      'input the number that you want to get the prime factors',[],[], 'OK',
-                                                      'CANCEL', backgroundColor=(90, 90, 150),
-                                                      promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0), allow_float=False, allow_negative=False)
+                                                           'input the number that you want to get the prime factors',
+                                                           [], [], 'OK',
+                                                           'CANCEL', backgroundColor=(90, 90, 150),
+                                                           promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0),
+                                                           allow_float=False, allow_negative=False)
                     if num is None:
                         message_window.error('exit because of empty input')
                         break
@@ -1407,9 +1519,11 @@ while True:
                     answertext.setValue(str(sympy.factorint(num)))
                 elif INDEX == 3:
                     num = textNumberDialogEventProgressing(window, (0, 0, 1004, 190),
-                                                      'input the first number that you want to get the GCD',[],[], 'OK',
-                                                      'CANCEL', backgroundColor=(90, 90, 150),
-                                                      promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0), allow_float=False, allow_negative=False)
+                                                           'input the first number that you want to get the GCD', [],
+                                                           [], 'OK',
+                                                           'CANCEL', backgroundColor=(90, 90, 150),
+                                                           promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0),
+                                                           allow_float=False, allow_negative=False)
                     if num is None:
                         message_window.error('exit because of empty input')
                         break
@@ -1417,9 +1531,11 @@ while True:
                         message_window.error('can only get the GCD of NONE ZERO integers')
                         break
                     num2 = textNumberDialogEventProgressing(window, (0, 0, 1004, 190),
-                                                      'input the second number that you want to get the GCD',[],[], 'OK',
-                                                      'CANCEL', backgroundColor=(90, 90, 150),
-                                                      promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0), allow_float=False, allow_negative=False)
+                                                            'input the second number that you want to get the GCD', [],
+                                                            [], 'OK',
+                                                            'CANCEL', backgroundColor=(90, 90, 150),
+                                                            promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0),
+                                                            allow_float=False, allow_negative=False)
                     if num2 is None:
                         message_window.error('exit because of empty input')
                         break
@@ -1433,24 +1549,25 @@ while True:
                         _ = answer
                         if answer_start_index != 0:
                             answer_start_index -= 1
-                        answertext.setValue(_[answer_start_index:66+answer_start_index])
+                        answertext.setValue(_[answer_start_index:66 + answer_start_index])
                 elif INDEX == 5:
                     if len(answer) > 65:
                         # right move
                         _ = answer
                         if answer_start_index + 65 < len(_):
                             answer_start_index += 1
-                        answertext.setValue(_[answer_start_index:66+answer_start_index])
+                        answertext.setValue(_[answer_start_index:66 + answer_start_index])
                 elif INDEX == 6:
                     answer_start_index = 0
                 elif INDEX == 7:
                     no_mouse = not no_mouse
                     line6 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 8,
                                          ['vector', 'divisors', 'prime factors', 'GCD', '<-(answer)', '->(answer)',
-                                          'head(answer)', 'No-mouse:ON' if no_mouse else 'No-mouse:OFF'], window, 120, 60, 0, 392, 124, 0,
+                                          'head(answer)', 'No-mouse:ON' if no_mouse else 'No-mouse:OFF'], window, 120,
+                                         60, 0, 392, 124, 0,
                                          font=font_path,
                                          font_size=14, callbacks=None)
-        if event_proceeded:continue
+        if event_proceeded: continue
 
         for i in line7.Buttons:
             if i.handleEvent(event):
@@ -1464,36 +1581,49 @@ while True:
                         mathtext += str(content)
                         texts += str(content)
                     except:
-                        message_window.error('the content that you want to paste is:"'+str(content)+'" ;which is not a number(only numbers is supported yet)')
-                elif INDEX == 1:usr_notice.draw()
+                        message_window.error('the content that you want to paste is:"' + str(
+                            content) + '" ;which is not a number(only numbers is supported yet)')
+                elif INDEX == 1:
+                    usr_notice.draw()
                 elif INDEX == 2:
                     #A(n, m)
-                    n = textNumberDialogEventProgressing(window, (0, 0, 1004, 190), 'input the number "n"',[],[], 'OK',
+                    n = textNumberDialogEventProgressing(window, (0, 0, 1004, 190), 'input the number "n"', [], [],
+                                                         'OK',
                                                          'CANCEL', backgroundColor=(90, 90, 150),
-                                                         promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0), allow_float=False, allow_negative=False)
-                    if n is None:message_window.error("No inputs is given");break
-                    m = textNumberDialogEventProgressing(window, (0, 0, 1004, 190), 'input the number "m"',[],[], 'OK',
+                                                         promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0),
+                                                         allow_float=False, allow_negative=False)
+                    if n is None: message_window.error("No inputs is given");break
+                    m = textNumberDialogEventProgressing(window, (0, 0, 1004, 190), 'input the number "m"', [], [],
+                                                         'OK',
                                                          'CANCEL', backgroundColor=(90, 90, 150),
-                                                         promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0), allow_float=False, allow_negative=False)
-                    if m is None:message_window.error("No inputs is given");break
-                    if not n > m: message_window.error("n(" + str(n) + ") should be bigger than m(" + str(m) + ")!");break
+                                                         promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0),
+                                                         allow_float=False, allow_negative=False)
+                    if m is None: message_window.error("No inputs is given");break
+                    if not n > m: message_window.error(
+                        "n(" + str(n) + ") should be bigger than m(" + str(m) + ")!");break
                     answertext.setValue(str(scipy.special.perm(n, m)))
                     answer = str(scipy.special.perm(n, m))
                 elif INDEX == 3:
                     #C(n, m)
-                    n = textNumberDialogEventProgressing(window, (0, 0, 1004, 190), 'input the number "n"',[],[], 'OK',
+                    n = textNumberDialogEventProgressing(window, (0, 0, 1004, 190), 'input the number "n"', [], [],
+                                                         'OK',
                                                          'CANCEL', backgroundColor=(90, 90, 150),
-                                                         promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0), allow_float=False, allow_negative=False)
-                    if n is None:message_window.error("No inputs is given");break
-                    m = textNumberDialogEventProgressing(window, (0, 0, 1004, 190), 'input the number "m"', [],[],'OK',
+                                                         promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0),
+                                                         allow_float=False, allow_negative=False)
+                    if n is None: message_window.error("No inputs is given");break
+                    m = textNumberDialogEventProgressing(window, (0, 0, 1004, 190), 'input the number "m"', [], [],
+                                                         'OK',
                                                          'CANCEL', backgroundColor=(90, 90, 150),
-                                                         promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0), allow_float=False, allow_negative=False)
-                    if m is None:message_window.error("No inputs is given");break
-                    if not n > m:message_window.error("n("+str(n)+") should be bigger than m("+str(m)+")!");break
-                    
-                    answertext.setValue(str(math.comb(n ,m)))
+                                                         promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0),
+                                                         allow_float=False, allow_negative=False)
+                    if m is None: message_window.error("No inputs is given");break
+                    if not n > m: message_window.error(
+                        "n(" + str(n) + ") should be bigger than m(" + str(m) + ")!");break
+
+                    answertext.setValue(str(math.comb(n, m)))
                     answer = str(math.comb(n, m))
-                elif INDEX == 4:pyperclip.copy(texts)
+                elif INDEX == 4:
+                    pyperclip.copy(texts)
 
         if backspace.handleEvent(event):
             texts = texts[0:-1]
@@ -1525,7 +1655,6 @@ while True:
             if any(a in mathtext.split(" ")[-1] for a in
                    functions):  # ["sin","cos","tan",'arcsin',"arccos","arctan","log","in","root"]
                 func = 1
-
 
     if point:
         line3.Buttons[0].enable()
