@@ -242,28 +242,34 @@ def Calculation(item1: str, mode: str = 'RAD'):
                             try:
                                 a = j.split('root')[0]
                                 b = j.split('root')[1]
+                                if a == '':
+                                    a = 2
+                                    # square root's simple written
                                 try:
                                     item[loc] = int(b) ** (1 / int(a))
                                 except ValueError:
                                     item[loc] = Decimal(b) ** (1 / Decimal(a))
                             except ValueError:
-                                return 'TYPE ERROR,must be int or float'
+                                return 'TYPE ERROR,the agreements of the "√" must be int or float'
                         else:
                             a = j.split('root')[0]
                             b = j.split('root')[1]
+                            if a == '':
+                                a = 2
+                                # square root's simple written
                             try:
-
                                 b = b[1:-1]
                                 b = Decimal(b)
                             except:
-                                if ('[' in a) and (']' in a):
-                                    a = Calculation(turn_normal_expr_to_internal_expr(a[j.index('[') + 1:-1]))
-                                else:
-                                    b = Calculation(turn_normal_expr_to_internal_expr(b))
+                                b = Calculation(turn_normal_expr_to_internal_expr(b))
+                                if 'ERROR' in b or b == '':
+                                    return 'ERROR:agreements of the "√" is illegal'
                             try:
                                 item[loc] = int(b) ** (1 / int(a))
                             except ValueError:
                                 item[loc] = Decimal(b) ** (1 / Decimal(a))
+
+
                     elif 'log' in str(j):
                         a = j.split('log')[0]
                         b = j.split('log')[1]

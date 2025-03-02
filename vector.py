@@ -84,8 +84,9 @@ def random_string(length:int):
     return string
 
 def load_vector_from_CocVectorInfo(file_name, names):
-    if file_name.split('.')[-1] != 'CocComplexInfo':
-        message_window.error('unsupported type:'+str(file_name.split('.')[-1])+';except type:CocComplexInfo')
+    if file_name.split('.')[-1] != 'CocVectorInfo':
+        message_window.error('unsupported type:'+str(file_name.split('.')[-1])+';except type:CocVectorInfo')
+        return
     with open(file_name, 'r') as matrix_file:
         try:
             all_complexes = []
@@ -169,7 +170,7 @@ def load_vector(window, clock, names, debug=False):
     loading_type_selector = CheckBox(2, ['input manually', 'load from .CocVectorInfo files'],
                                      1,
                                      window, clock, first_x=40, first_y=100, each_add_x=0, each_add_y=30,
-                                     buttons_adjust_length=100, background_color=(90, 90, 150))
+                                     buttons_adjust_length=0, background_color=(90, 90, 150))
     if loading_type_selector.clicked_choices == 'cancel':
         message_window.error('no inputs is given')
         return
@@ -534,7 +535,7 @@ class VectorUi(subWindow):
                                           ['reset value', 'RENAME'],
                                           1,
                                           self.window, self.clock, first_x=60, first_y=100, each_add_x=0, each_add_y=30,
-                                          buttons_adjust_length=100, background_color=(90, 90, 150))
+                                          buttons_adjust_length=0, background_color=(90, 90, 150))
         if len(changing_type_selector.clicked_choices) == 0 or type(
             changing_type_selector.clicked_choices) == str: return
         choice = changing_type_selector.clicked_choices[0]
@@ -733,8 +734,8 @@ class VectorUi(subWindow):
                                  ['Remove Curr Vec','Vector Projection', 'Vector Angle', 'Normalize Vector', 'Cross Product',
                                   'Projection Length'],
                                  1,
-                                 self.window, self.clock, first_x=40, first_y=100, each_add_x=0, each_add_y=30,
-                                 buttons_adjust_length=100, background_color=(90, 90, 150))
+                                 self.window, self.clock, first_x=40, first_y=0, each_add_x=0, each_add_y=30,
+                                 buttons_adjust_length=0, background_color=(90, 90, 150))
         if type_selector.clicked_choices == 'cancel' or len(type_selector.clicked_choices) == 0:
             message_window.error('no choice is selected')
             return

@@ -107,20 +107,20 @@ class CoordinateSystem2d:
         for item in self.arrows:
             start_loc, end_loc, colour, text = item
             plt.quiver(*start_loc, *(end_loc[0] - start_loc[0], end_loc[1] - start_loc[1]),
-                       color=(colour[0] / 255, colour[1] / 255, colour[2] / 255), scale=1, scale_units='xy',
+                       color=colour, scale=1, scale_units='xy',
                        angles='xy')
             if text is not None:
-                plt.text(*end_loc, color=(colour[0] / 255, colour[1] / 255, colour[2] / 255), s=text)
+                plt.text(*end_loc, color=colour, s=text)
         for item in self.lines:
             start_loc, end_loc, colour, text = item
-            plt.plot(*start_loc, *end_loc, color=(colour[0] / 255, colour[1] / 255, colour[2] / 255))
+            plt.plot(*start_loc, *end_loc, color=colour)
             if text is not None:
-                plt.text(*end_loc, color=(colour[0] / 255, colour[1] / 255, colour[2] / 255), s=text)
+                plt.text(*end_loc, color=colour, s=text)
         for item in self.points:
             loc, colour, text = item
-            plt.scatter(*loc, color=(colour[0] / 255, colour[1] / 255, colour[2] / 255))
+            plt.scatter(*loc, color=colour)
             if text is not None:
-                plt.text(*loc, color=(colour[0] / 255, colour[1] / 255, colour[2] / 255), s=text)
+                plt.text(*loc, color=colour, s=text)
         canvas = agg.FigureCanvasAgg(self.fig)
         canvas.draw()
         renderer = canvas.get_renderer()
@@ -340,7 +340,7 @@ class CoordinateSystem3d:
         for item in self.arrows:
             start_loc, end_loc, colour, text = item
             plt.quiver(*start_loc, *(end_loc[0] - start_loc[0], end_loc[1] - start_loc[1], end_loc[2] - start_loc[2]),
-                       color=(colour[0] / 255, colour[1] / 255, colour[2] / 255))
+                       color=colour)
             if self.num >= 3:
                 self.draw_3d_mark_lines(end_loc, self.ax, color=colour)
                 if start_loc != (0, 0, 0):
@@ -349,10 +349,10 @@ class CoordinateSystem3d:
                 plot_dashed_cuboid(*(end_loc[0] - start_loc[0], end_loc[1] - start_loc[1], end_loc[2] - start_loc[2]),
                                    self.ax, start_loc, color=colour)
             if text is not None:
-                self.ax.text(*end_loc, text, color=(colour[0] / 255, colour[1] / 255, colour[2] / 255))
+                self.ax.text(*end_loc, text, color=colour)
         for item in self.lines:
             start_loc, end_loc, colour, text = item
-            plt.plot(*start_loc, *end_loc, color=(colour[0] / 255, colour[1] / 255, colour[2] / 255))
+            plt.plot(*start_loc, *end_loc, color=colour)
             if self.num >= 3:
                 self.draw_3d_mark_lines(end_loc, self.ax, color=colour)
                 if start_loc != (0, 0, 0):
@@ -361,16 +361,16 @@ class CoordinateSystem3d:
                 plot_dashed_cuboid(*(end_loc[0] - start_loc[0], end_loc[1] - start_loc[1], end_loc[2] - start_loc[2]),
                                    self.ax, start_loc, color=colour)
             if text is not None:
-                self.ax.text(*end_loc, text, color=(colour[0] / 255, colour[1] / 255, colour[2] / 255))
+                self.ax.text(*end_loc, text, color=colour)
         for item in self.points:
             loc, colour, text = item
-            self.ax.scatter(*loc, color=(colour[0] / 255, colour[1] / 255, colour[2] / 255))
+            self.ax.scatter(*loc, color=colour)
             if self.num >= 3:
                 self.draw_3d_mark_lines(loc, self.ax, color=colour)
             else:
                 plot_dashed_cuboid(*loc, self.ax)
             if text is not None:
-                self.ax.text(*loc, color=(colour[0] / 255, colour[1] / 255, colour[2] / 255), s=text)
+                self.ax.text(*loc, color=colour, s=text)
 
         self.canvas = agg.FigureCanvasAgg(self.fig)
         self.canvas.draw()
@@ -533,10 +533,10 @@ class CoordinateSystem3d:
 
 
 
-    def draw_3d_mark_lines(self, loc, ax, color=(0, 0, 255)):
-        self.ax.plot([loc[0], loc[0]], [self.last_lim[2], loc[1]], [loc[2], loc[2]], linestyle='--', color=(color[0]/255, color[1]/255, color[2]/255))
-        self.ax.plot([self.last_lim[0], loc[0]], [loc[1], loc[1]], [loc[2], loc[2]], linestyle='--', color=(color[0]/255, color[1]/255, color[2]/255))
-        self.ax.plot([loc[0], loc[0]], [loc[1], loc[1]], [self.last_lim[4], loc[2]], linestyle='--', color=(color[0]/255, color[1]/255, color[2]/255))
+    def draw_3d_mark_lines(self, loc, ax, color:str):
+        self.ax.plot([loc[0], loc[0]], [self.last_lim[2], loc[1]], [loc[2], loc[2]], linestyle='--', color=color)
+        self.ax.plot([self.last_lim[0], loc[0]], [loc[1], loc[1]], [loc[2], loc[2]], linestyle='--', color=color)
+        self.ax.plot([loc[0], loc[0]], [loc[1], loc[1]], [self.last_lim[4], loc[2]], linestyle='--', color=color)
 
 
 class Button:
@@ -584,7 +584,7 @@ def pygame_draw_arrow(window, start_pos, end_pos, width=10, color=(0, 192, 255))
     pygame.draw.polygon(window, color, [triangle_other_point1, triangle_other_point2, triangle_end_point])
 
 
-def plot_dashed_cuboid(length, width, height, ax, lower_left=(0, 0, 0), color=(0, 0, 255)):
+def plot_dashed_cuboid(length, width, height, ax, lower_left=(0, 0, 0), color=''):
     """
     :param length: length : float    - x length
     :param width: width  : float    - y length
@@ -624,7 +624,7 @@ def plot_dashed_cuboid(length, width, height, ax, lower_left=(0, 0, 0), color=(0
         start, end = vertices[edge[0]], vertices[edge[1]]
         ax.plot(*zip(start, end),
                 linestyle='--',
-                color=(color[0] / 255, color[1] / 255, color[2] / 255),
+                color=color,
                 linewidth=0.5,
                 alpha=0.7)
 
@@ -638,9 +638,9 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((screen_width, screen_height), DOUBLEBUF)
     #b = CoordinateSystem2d(screen, (0, 0), (800, 600))
     a = CoordinateSystem3d(screen, (0, 0), (800, 600), no_mouse=False)
-    #a.AddItem((0, 0, 0), (4, 1, 3),color=(0, 0, 64), label='a')
-    a.AddItem((1, 1, 1), (4, 4, 3),color=(0, 64, 0), label='b')
-    a.AddItem((2, 2, 2), (4, 1, 3),color=(0, 128, 128), label='c')
+    #a.AddItem((0, 0, 0), (4, 1, 3),label='a')
+    a.AddItem((1, 1, 1), (4, 4, 3), label='b')
+    a.AddItem((2, 2, 2), (4, 1, 3),label='c')
     # 游戏主循环
     running = True
     while running:

@@ -727,6 +727,9 @@ def data_visualize_2d(window, clock, debug=False):
     develop time:2025-1-17
     """
     global message_window
+    plt.close()
+    fig = plt.figure()
+    fig.clear()
     data_collecting_method = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'how do you want to collect data',
                                         '.xlsx file', "by inputting the data manually")
     mult = pyghelpers.textYesNoDialog(window, (0, 300, 600, 300), 'you want to draw chart(s) on',
@@ -1525,14 +1528,15 @@ def loading_data(data_collecting_method, window, comments:str='', reload_data=Tr
 
 
 def data_analyze(window, clock):
+    plt.close()
+    fig = plt.figure()
+    fig.clear()
     global message_window, statistics_funcs
     all_statistic_types = ['mean','max','min','standard deviation','mode','variance',
                                    'median','range','percentile','skew','kurtosis','correlation','covariance',
                                    'moving average','Exponential-Weighted-Moving-Average','Z-scores','Cumulative Distribution Function',
                                    'Probability Density Function','MAD','M2','info entropy','auto-correlation', 'Jackknife-statistics', 'frequency count', 'Median Absolute Deviation Ratio',
                                    'linear-trend', 'trimmed-mean', 'F statistic', 'T statistic', 'P statistic', 'coefficient of variation','Pearson correlation coefficient']
-    # extra :percentile(8)+percent ;correlation(11)- ;covariance(12)- ;moving_average(13)+window_size ;EWMA(14)+alpha ;calculate_F_statistic(27)- ;
-    # calculate_T_statistic(28)- ;calculate_P_statistic(29)- ;Pearson_correlation_coefficient(31)-
     data_collecting_method = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'how do you want to collect data?',
                                                         '.xlsx file', "by inputting the data manually")
     file_data = None
@@ -1559,7 +1563,7 @@ def data_analyze(window, clock):
     many_statistic_per_type = pyghelpers.textYesNoDialog(window, (0, 300, 700, 300), 'how many statistics of each type do you want to calculate?',
                                                         'Many(often use in data comparison)', "Only one each type")
     analyse_types = []
-    if len(analyse_choice.clicked_choices) == 0 or type(analyse_choice) == str:
+    if len(analyse_choice.clicked_choices) == 0 or type(analyse_choice.clicked_choices) == str:
         return
     if not many_statistic_per_type:
         analyse_types = analyse_choice.clicked_choices
@@ -1877,6 +1881,7 @@ def data_comparison(window, clock):
         return
     charts_x_num = max([1,int(np.ceil(np.sqrt(data_num)))])
     charts_y_num = max([1,int(np.ceil(data_num / charts_x_num))])
+    plt.close()
     fig = plt.figure()
     fig.clear()
     for i in range(data_num):
@@ -2035,6 +2040,9 @@ def IntervalClassification(data:list|tuple, IntervalNum:int=10, calculate_data:b
 def data_distribution_analyse(data:list|tuple, bins:int=30, normal_curve_num:int=1000,show_mean=True, show_1_sigma=True, show_2_sigma=True, show_3_sigma=True, draw_normal=True):
     mean = np.mean(data)
     std = np.std(data)
+    plt.close()
+    fig = plt.figure()
+    fig.clear()
     if draw_normal:
         normally_x = np.linspace(np.min(data), np.max(data), normal_curve_num)
         normally_y = normal_density(mean, std, normally_x, max(IntervalClassification(data, bins, False)))
@@ -2191,7 +2199,9 @@ def load_matrix(window, comments='', data_collecting_method=True, req: tuple[int
 
 def data_visualize_3d(window, clock):
     axs = []
+    plt.close()
     fig = plt.figure()
+    fig.clear()
 
     data_collecting_method = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'how do you want to collect data',
                                                         '.xlsx file', "by inputting the data manually")
@@ -2306,7 +2316,7 @@ def data_visualize_3d(window, clock):
                                       file_data=file_data)
                 if y_data is None: message_window.error('No y data is selected!Skip this draw');continue
                 z_data = load_matrix(comments='z[shape:('+str(len(x_data))+','+str(len(y_data))+')]', data_collecting_method=data_collecting_method,
-                                     req=(len(x_data), len(y_data)))
+                                     req=(len(x_data), len(y_data)),window=window)
                 if z_data is None:
                     message_window.error('No z data is selected!Skip this draw');continue
                 if len(z_data[0]) != len(x_data) or len(z_data) != len(y_data):
@@ -2391,6 +2401,9 @@ def data_visualize_3d(window, clock):
                 z_data = load_matrix('for the data part',data_collecting_method=data_collecting_method, req=(len(x_data), len(y_data)))
                 if z_data is None:
                     message_window.error('No value is selected!, skip this draw');continue
+                if len(z_data) != len(y_data) or len(z_data[0]) != len(x_data):
+                    message_window.error('Dimension disagree:'+str(len(x_data))+'->'+str(len(z_data[0]))+';'+str(len(y_data))+'->'+str(len(z_data)))
+                    continue
                 Index = 0
                 for y in y_data:
                     axs[-1].bar(x_data, z_data[Index], y, zdir='y')

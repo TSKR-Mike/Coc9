@@ -88,49 +88,49 @@ def get_calcu_symbol_key(event):
 
 
 def show_user_text():
-    global texts, text, text_length_warned
-    if len(texts) <= 32:
-        text = pygwidgets.DisplayText(window, (0, 0), texts, font_path, 50, 1004, backgroundColor=(255, 255, 255),
+    global usr_showing_maths_texts, text, text_length_warned
+    if len(usr_showing_maths_texts) <= 32:
+        text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 50, 1004, backgroundColor=(255, 255, 255),
                                       height=90)
-    elif len(texts) <= 42:
-        text = pygwidgets.DisplayText(window, (0, 0), texts, font_path, 40, 1004, backgroundColor=(255, 255, 255),
+    elif len(usr_showing_maths_texts) <= 42:
+        text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 40, 1004, backgroundColor=(255, 255, 255),
                                       height=90)
-    elif len(texts) <= 55:
-        text = pygwidgets.DisplayText(window, (0, 0), texts, font_path, 30, 1004, backgroundColor=(255, 255, 255),
+    elif len(usr_showing_maths_texts) <= 55:
+        text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 30, 1004, backgroundColor=(255, 255, 255),
                                       height=90)
-    elif len(texts) <= 110:
+    elif len(usr_showing_maths_texts) <= 110:
         # 双行显示
-        text = pygwidgets.DisplayText(window, (0, 0), texts[0:55], font_path, 30, 1004, backgroundColor=(255, 255, 255),
+        text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts[0:55], font_path, 30, 1004, backgroundColor=(255, 255, 255),
                                       height=31)
-        text2 = pygwidgets.DisplayText(window, (0, 31), texts[55:111], font_path, 30, 1004,
+        text2 = pygwidgets.DisplayText(window, (0, 31), usr_showing_maths_texts[55:111], font_path, 30, 1004,
                                        backgroundColor=(255, 255, 255),
                                        height=59)
         text2.draw()
     else:
-        text = pygwidgets.DisplayText(window, (0, 0), texts[0:55], font_path, 30, 1004,
+        text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts[0:55], font_path, 30, 1004,
                                       backgroundColor=(255, 255, 255),
                                       height=31)
-        over = len(texts) - 165
-        if len(texts) > 165 and not text_length_warned:
+        over = len(usr_showing_maths_texts) - 165
+        if len(usr_showing_maths_texts) > 165 and not text_length_warned:
             message_window.warning(
-                "The length of the string that you input is longer than the max number(165):" + str(len(texts)) +
+                "The length of the string that you input is longer than the max number(165):" + str(len(usr_showing_maths_texts)) +
                 ", suggesting canceling the formula into a shorter one, or the screen won't be able to show all characters.")
             text_length_warned = True
         if over <= 0:
             text_length_warned = False
-            text.setValue(texts[0:56])
-            text2 = pygwidgets.DisplayText(window, (0, 30), texts[56:112], font_path, 30, 1004,
+            text.setValue(usr_showing_maths_texts[0:56])
+            text2 = pygwidgets.DisplayText(window, (0, 30), usr_showing_maths_texts[56:112], font_path, 30, 1004,
                                            backgroundColor=(255, 255, 255),
                                            height=30)
-            text3 = pygwidgets.DisplayText(window, (0, 60), texts[112:165], font_path, 30, 1004,
+            text3 = pygwidgets.DisplayText(window, (0, 60), usr_showing_maths_texts[112:165], font_path, 30, 1004,
                                            backgroundColor=(255, 255, 255),
                                            height=30)
         else:
-            text.setValue(texts[over:56 + over])
-            text2 = pygwidgets.DisplayText(window, (0, 30), texts[56 + over:112 + over], font_path, 30, 1004,
+            text.setValue(usr_showing_maths_texts[over:56 + over])
+            text2 = pygwidgets.DisplayText(window, (0, 30), usr_showing_maths_texts[56 + over:112 + over], font_path, 30, 1004,
                                            backgroundColor=(255, 255, 255),
                                            height=30)
-            text3 = pygwidgets.DisplayText(window, (0, 60), texts[112 + over:165 + over], font_path, 30, 1004,
+            text3 = pygwidgets.DisplayText(window, (0, 60), usr_showing_maths_texts[112 + over:165 + over], font_path, 30, 1004,
                                            backgroundColor=(255, 255, 255),
                                            height=30)
         text2.draw()
@@ -281,16 +281,16 @@ line6 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 
                      ['vector', 'divisors', 'prime factors', 'GCD', '<-(answer)', '->(answer)', 'head(answer)',
                       'No-mouse:OFF'], window, 120, 60, 0, 392, 124, 0, font=font_path,
                      font_size=14, callbacks=None)
-line7 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 5,
-                     ['paste', 'user guide', 'A(n,m)', 'C(n,m)', 'copy formula'], window, 120, 60, 0, 452, 124, 0,
+line7 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 6,
+                     ['paste', 'user guide', 'A(n,m)', 'C(n,m)', 'copy formula', 'Memory C'], window, 120, 60, 0, 452, 124, 0,
                      font=font_path,
                      font_size=14, callbacks=None)
 
 answer = ''
 backspace = pygwidgets.TextButton(window, (870, 212), 'backspace', 120, 60, textColor=(0, 0, 0), upColor=(90, 90, 150),
                                   overColor=(0, 50, 100), downColor=(20, 0, 80), fontName=font_path, fontSize=18)
-texts = ''
-text = pygwidgets.DisplayText(window, (0, 0), texts, font_path, 60, 1004, backgroundColor=(255, 255, 255), height=90)
+usr_showing_maths_texts = ''
+text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 60, 1004, backgroundColor=(255, 255, 255), height=90)
 answertext = pygwidgets.DisplayText(window, (0, 570), '', font_path, 30, 1004, backgroundColor=(255, 255, 255),
                                     height=40)
 left = 0
@@ -332,7 +332,7 @@ while True:
                 try:
                     content = float(content)
                     mathtext += str(content)
-                    texts += str(content)
+                    usr_showing_maths_texts += str(content)
                     continue
                 except:
                     message_window.error('the content that you want to paste is:"' + str(
@@ -358,7 +358,7 @@ while True:
                             answer = str(text_)
 
                 except Exception as e:
-                    message_window.error('Invalid mathematical expression:' + str(texts) + ',please recheck your input')
+                    message_window.error('Invalid mathematical expression:' + str(usr_showing_maths_texts) + ',please recheck your input')
             elif event.key == pygame.K_LEFT:
                 if len(answer) > 65:
                     # left move
@@ -374,21 +374,21 @@ while True:
                         answer_start_index += 1
                     answertext.setValue(_[answer_start_index:66 + answer_start_index])
             elif event.key == pygame.K_DELETE:
-                texts = '';
+                usr_showing_maths_texts = ''
                 mathtext = ''
-                answer = '';
-                point = True;
+                answer = ''
+                point = True
                 operator = True
             num = get_number_key(event)
             if num is not None:
                 operator = False
-                texts += str(num)
+                usr_showing_maths_texts += str(num)
                 mathtext += str(num)
                 continue
             symbol = get_calcu_symbol_key(event)
             if symbol is not None:
                 if symbol == '+':
-                    texts += '+'
+                    usr_showing_maths_texts += '+'
                     point = True
                     if left > right:  # 当前输入的是函数的参数
                         mathtext += '+'
@@ -397,7 +397,7 @@ while True:
                         func = 0
                     operator = True
                 elif symbol == '-':
-                    texts += '-'
+                    usr_showing_maths_texts += '-'
                     point = True
                     if left > right:  # 当前输入的是函数的参数
                         mathtext += '-'
@@ -411,7 +411,7 @@ while True:
                             mathtext += ' - '  # 在[]外
                         func = 0
                 elif symbol == '*':
-                    texts += '*'
+                    usr_showing_maths_texts += '*'
                     point = True
                     if left > right:  # 当前输入的是函数的参数
                         mathtext += '*'
@@ -420,7 +420,7 @@ while True:
                         func = 0
                     operator = True
                 elif symbol == '/':
-                    texts += '/'
+                    usr_showing_maths_texts += '/'
                     point = True
                     if left > right:  # 当前输入的是函数的参数
                         mathtext += '/'
@@ -430,13 +430,13 @@ while True:
                     operator = True
                 elif symbol == '.':
                     if point:
-                        texts += '.'
+                        usr_showing_maths_texts += '.'
                         mathtext += '.'
                         point = False
                     else:
                         line3.Buttons[0].disable()
                 elif symbol == '(':
-                    texts += '('
+                    usr_showing_maths_texts += '('
                     if not func:
                         if left > right:  # 当前输入的是函数的参数
                             mathtext += '('
@@ -447,7 +447,7 @@ while True:
                         left += 1
                     operator = True
                 elif symbol == ')':
-                    texts += ')'
+                    usr_showing_maths_texts += ')'
                     if not func:
                         if left > right:  # 当前输入的是函数的参数
                             mathtext += ')'
@@ -461,12 +461,12 @@ while True:
                     operator = False
                 elif symbol == '!':
                     mathtext += '!'
-                    texts += '!'
+                    usr_showing_maths_texts += '!'
                     func = 1
                     operator = False
                 elif symbol == '^':
                     point = True
-                    texts += '^'
+                    usr_showing_maths_texts += '^'
                     if left > right:
                         mathtext += '^'
                     else:
@@ -475,7 +475,7 @@ while True:
                 else:
                     continue
             if event.key == pygame.K_BACKSPACE:
-                texts = texts[0:-1]
+                usr_showing_maths_texts = usr_showing_maths_texts[0:-1]
                 if len(mathtext) == 0:
                     operator = True
                     continue
@@ -512,49 +512,49 @@ while True:
                     func = 1
 
         window.fill((0, 191, 255))
-        if len(texts) <= 32:
-            text = pygwidgets.DisplayText(window, (0, 0), texts, font_path, 50, 1004, backgroundColor=(255, 255, 255),
+        if len(usr_showing_maths_texts) <= 32:
+            text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 50, 1004, backgroundColor=(255, 255, 255),
                                           height=92)
-        elif len(texts) <= 42:
-            text = pygwidgets.DisplayText(window, (0, 0), texts, font_path, 40, 1004, backgroundColor=(255, 255, 255),
+        elif len(usr_showing_maths_texts) <= 42:
+            text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 40, 1004, backgroundColor=(255, 255, 255),
                                           height=92)
-        elif len(texts) <= 55:
-            text = pygwidgets.DisplayText(window, (0, 0), texts, font_path, 30, 1004, backgroundColor=(255, 255, 255),
+        elif len(usr_showing_maths_texts) <= 55:
+            text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 30, 1004, backgroundColor=(255, 255, 255),
                                           height=92)
-        elif len(texts) <= 112:
+        elif len(usr_showing_maths_texts) <= 112:
             # 双行显示
-            text = pygwidgets.DisplayText(window, (0, 0), texts[0:56], font_path, 30, 1004,
+            text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts[0:56], font_path, 30, 1004,
                                           backgroundColor=(255, 255, 255),
                                           height=31)
-            text2 = pygwidgets.DisplayText(window, (0, 31), texts[56:112], font_path, 30, 1004,
+            text2 = pygwidgets.DisplayText(window, (0, 31), usr_showing_maths_texts[56:112], font_path, 30, 1004,
                                            backgroundColor=(255, 255, 255),
                                            height=61)
             text2.draw()
         else:
-            text = pygwidgets.DisplayText(window, (0, 0), texts[0:56], font_path, 30, 1004,
+            text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts[0:56], font_path, 30, 1004,
                                           backgroundColor=(255, 255, 255),
                                           height=31)
-            over = len(texts) - 165
-            if len(texts) > 165 and not text_length_warned:
+            over = len(usr_showing_maths_texts) - 165
+            if len(usr_showing_maths_texts) > 165 and not text_length_warned:
                 message_window.warning(
-                    "The length of the string that you input is longer than the max number(165):" + str(len(texts)) +
+                    "The length of the string that you input is longer than the max number(165):" + str(len(usr_showing_maths_texts)) +
                     ", suggesting canceling the formula into a shorter one, or the screen won't be able to show all characters.")
                 text_length_warned = True
             if over <= 0:
                 text_length_warned = False
-                text.setValue(texts[0:56])
-                text2 = pygwidgets.DisplayText(window, (0, 31), texts[56:112], font_path, 30, 1004,
+                text.setValue(usr_showing_maths_texts[0:56])
+                text2 = pygwidgets.DisplayText(window, (0, 31), usr_showing_maths_texts[56:112], font_path, 30, 1004,
                                                backgroundColor=(255, 255, 255),
                                                height=31)
-                text3 = pygwidgets.DisplayText(window, (0, 62), texts[112:165], font_path, 30, 1004,
+                text3 = pygwidgets.DisplayText(window, (0, 62), usr_showing_maths_texts[112:165], font_path, 30, 1004,
                                                backgroundColor=(255, 255, 255),
                                                height=30)
             else:
-                text.setValue(texts[over:56 + over])
-                text2 = pygwidgets.DisplayText(window, (0, 31), texts[56 + over:112 + over], font_path, 30, 1004,
+                text.setValue(usr_showing_maths_texts[over:56 + over])
+                text2 = pygwidgets.DisplayText(window, (0, 31), usr_showing_maths_texts[56 + over:112 + over], font_path, 30, 1004,
                                                backgroundColor=(255, 255, 255),
                                                height=31)
-                text3 = pygwidgets.DisplayText(window, (0, 62), texts[112 + over:165 + over], font_path, 30, 1004,
+                text3 = pygwidgets.DisplayText(window, (0, 62), usr_showing_maths_texts[112 + over:165 + over], font_path, 30, 1004,
                                                backgroundColor=(255, 255, 255),
                                                height=31)
             text2.draw()
@@ -576,18 +576,18 @@ while True:
             INDEX = line1.Buttons.index(i)
             if i.handleEvent(event):
                 if INDEX < 10:  # 输入数字
-                    texts += str(INDEX)
+                    usr_showing_maths_texts += str(INDEX)
                     mathtext += str(INDEX)
                     operator = False
                 else:
                     if INDEX == 15:
-                        texts = '';
+                        usr_showing_maths_texts = ''
                         mathtext = ''
-                        answer = '';
-                        point = True;
+                        answer = ''
+                        point = True
                         operator = True
                     elif INDEX == 10:
-                        texts += '+'
+                        usr_showing_maths_texts += '+'
                         point = True
                         operator = True
                         if left > right:  # 当前输入的是函数的参数
@@ -596,7 +596,7 @@ while True:
                             mathtext += ' + '  # 在[]外
                             func = 0
                     elif INDEX == 11:
-                        texts += '-'
+                        usr_showing_maths_texts += '-'
                         point = True
                         if left > right:  # 当前输入的是函数的参数
                             mathtext += '-'
@@ -610,7 +610,7 @@ while True:
                                 mathtext += ' - '  # 在[]外
                             func = 0
                     elif INDEX == 12:
-                        texts += '*'
+                        usr_showing_maths_texts += '*'
                         point = True
                         operator = True
                         if left > right:  # 当前输入的是函数的参数
@@ -619,7 +619,7 @@ while True:
                             mathtext += ' * '  # 在[]外
                             func = 0
                     elif INDEX == 13:
-                        texts += '/'
+                        usr_showing_maths_texts += '/'
                         point = True
                         operator = True
                         if left > right:  # 当前输入的是函数的参数
@@ -659,7 +659,7 @@ while True:
             if i.handleEvent(event):
                 if INDEX == 0:
                     operator = True
-                    texts += '('
+                    usr_showing_maths_texts += '('
                     if not func:
                         if left > right:  # 当前输入的是函数的参数
                             mathtext += '('
@@ -670,7 +670,7 @@ while True:
                         left += 1
                 elif INDEX == 1:
                     operator = False
-                    texts += ')'
+                    usr_showing_maths_texts += ')'
                     if not func:
                         if left > right:  # 当前输入的是函数的参数
 
@@ -683,60 +683,60 @@ while True:
                         if left == right:  # means exit from present function
                             func = 0
                 elif INDEX == 2:
-                    MEMORY = (texts, mathtext)
+                    MEMORY = (usr_showing_maths_texts, mathtext)
                 elif INDEX == 3:
-                    texts, mathtext = MEMORY
+                    usr_showing_maths_texts, mathtext = MEMORY
                 elif INDEX == 4:
                     mode = 'RAD'
                 elif INDEX == 5:
                     mode = 'DEG'
                 elif INDEX == 6:
-                    texts += 'sin'
+                    usr_showing_maths_texts += 'sin'
                     mathtext += 'sin;'
                     func = 1
                     operator = True
                 elif INDEX == 7:
-                    texts += 'cos'
+                    usr_showing_maths_texts += 'cos'
                     mathtext += 'cos;'
                     func = 1
                     operator = True
                 elif INDEX == 8:
-                    texts += 'tan'
+                    usr_showing_maths_texts += 'tan'
                     mathtext += 'tan;'
                     func = 1
                     operator = True
                 elif INDEX == 9:
-                    texts += 'arcsin'
+                    usr_showing_maths_texts += 'arcsin'
                     mathtext += 'arcsin;'
                     func = 1
                     operator = True
                 elif INDEX == 10:
-                    texts += 'arccos'
+                    usr_showing_maths_texts += 'arccos'
                     mathtext += 'arccos;'
                     func = 1
                     operator = True
                 elif INDEX == 11:
-                    texts += 'arctan'
+                    usr_showing_maths_texts += 'arctan'
                     mathtext += 'arctan;'
                     func = 1
                     operator = True
                 elif INDEX == 12:
-                    texts += '!'
+                    usr_showing_maths_texts += '!'
                     mathtext += '!'
                     func = 1
                     operator = False
                 elif INDEX == 13:
-                    texts += 'log'
+                    usr_showing_maths_texts += 'log'
                     mathtext += 'log'
                     func = 1
                     operator = True
                 elif INDEX == 14:
-                    texts += 'ln'
+                    usr_showing_maths_texts += 'ln'
                     mathtext += 'ln'
                     func = 1
                     operator = True
                 elif INDEX == 15:
-                    texts += '√'
+                    usr_showing_maths_texts += '√'
                     mathtext += 'root'
                     func = 1
                     operator = True
@@ -750,22 +750,22 @@ while True:
             if i.handleEvent(event):
                 if INDEX == 0:
                     if point:
-                        texts += '.'
+                        usr_showing_maths_texts += '.'
                         mathtext += '.'
                         point = False
                     else:
                         i.disable()
                 elif INDEX == 1:
                     point = False
-                    texts += 'e'
+                    usr_showing_maths_texts += 'e'
                     mathtext += str(math.e)
                 elif INDEX == 2:
                     point = False
-                    texts += 'π'
+                    usr_showing_maths_texts += 'π'
                     mathtext += str(math.pi)
                 elif INDEX == 3:
                     point = True
-                    texts += '^'
+                    usr_showing_maths_texts += '^'
                     if left > right:
                         mathtext += '^'
                     else:
@@ -777,22 +777,18 @@ while True:
                                                           'CANCEL', backgroundColor=(90, 90, 150),
                                                           promptTextColor=(0, 0, 0),
                                                           inputTextColor=(0, 0, 0))
-                    try:
-                        if 'x' in formula:
-                            pass
-                    except TypeError:
+                    if formula is None:
+                        message_window.error('No formula is given')
                         continue
                     if not ('x' in formula or 'y' in formula):
-                        answertext.setValue('you are not input a formula')
-                        answer = ''
+                        message_window.error('You are not input a formula(contains "x" or/and "y"):'+str(formula))
                     else:
-                        answertext.setValue('')
                         definite_integral = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'TYPE',
                                                                        'definite integral',
                                                                        'indefinite integral')
-                        x = sympy.symbols('x')
-                        y = sympy.symbols('y')
-                        z = sympy.symbols('z')
+                        x = sympy.Symbol('x')
+                        y = sympy.Symbol('y')
+                        z = sympy.Symbol('z')
 
                         if not definite_integral:  # 不定积分
                             to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
@@ -865,18 +861,23 @@ while True:
                             if integral_min is None:
                                 message_window.error('No numbers is given')
                                 continue
-                            if not to_x:  # 对y积分
+                            try:
+                                if not to_x:  # 对y积分
+                                    Answer = sympy.integrate(sympy.sympify(formula), (y, integral_min, integral_max))
+                                else:  # 对x积分
+                                    Answer = sympy.integrate(sympy.sympify(formula), (x, integral_min, integral_max))
 
-                                Answer = sympy.integrate(sympy.sympify(formula), (y, integral_min, integral_max))
-                            else:  # 对x积分
-                                Answer = sympy.integrate(sympy.sympify(formula), (x, integral_min, integral_max))
+                                if isinstance(Answer, sympy.Integral):
+                                    message_window.warning('Failed to get the symbol integral of:'+formula+', the system will return a numeric value')
+                                    Answer = Answer.evalf()
+                                    result, err = Answer.as_real_imag()
+                                    if abs(err) > 0.1 * abs(result):
+                                        message_window.warning('The answer is NOT reliable, the integral may be diverge')
 
-                            if isinstance(Answer, sympy.Integral):
-                                message_window.warning('Failed to get the symbol integral of:'+formula+', the system will return a numeric value')
-                                Answer = str(Answer.evalf())
-
-                            answertext.setValue(str(Answer))
-                            answer = str(Answer)
+                                answertext.setValue(str(Answer))
+                                answer = str(Answer)
+                            except Exception as e:
+                                message_window.error('Failed to do the integral on formula:'+str(formula)+', because of the following error was occured:'+str(e))
 
                 elif INDEX == 5: # double integral
                     formula = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
@@ -884,58 +885,60 @@ while True:
                                                           'CANCEL', backgroundColor=(90, 90, 150),
                                                           promptTextColor=(0, 0, 0),
                                                           inputTextColor=(0, 0, 0))
-                    try:
-                        if 'x' in formula:
-                            pass
-                    except TypeError:
+                    if formula is None:
+                        message_window.error('No formula is given')
+                        continue
+                    if not ('x' in formula or 'y' in formula):
+                        message_window.error('You are not input a formula(contains "x" or/and "y"):'+str(formula))
                         continue
 
-                    answertext.setValue('')
-                    mathtext = ''
-                    texts = ''
                     definite_integral = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'TYPE',
                                                                    'definite integral',
                                                                    'indefinite integral')
-                    x = sympy.symbols('x')
-                    y = sympy.symbols('y')
-                    z = sympy.symbols('z')
+                    x = sympy.Symbol('x')
+                    y = sympy.Symbol('y')
+                    z = sympy.Symbol('z')
                     break_integral = False
                     if not definite_integral:  # 不定积分
 
                         to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                          'to', 'x  (dx)',
+                                                          '(outer)to', 'x  (dx)',
                                                           'y  (dy)')
-                        if not to_x:  # 对y积分
-                            Answer = sympy.integrate(sympy.sympify(formula), y)
-                            to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                              'to', 'x  (dx)',
-                                                              'y  (dy)')
+                        try:
                             if not to_x:  # 对y积分
-                                Answer = sympy.integrate(sympy.sympify(Answer), y)
+                                # outer layer
+                                Answer = sympy.integrate(sympy.sympify(formula), y)
+                                to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
+                                                                  '(inner)to', 'x  (dx)',
+                                                                  'y  (dy)')
+                                if not to_x:  # 对y积分
+                                    Answer = sympy.integrate(sympy.sympify(Answer), y)
+                                else:  # 对x积分
+                                    Answer = sympy.integrate(sympy.sympify(Answer), x)
+                                answertext.setValue(Answer)
+                                answer = str(Answer)
 
                             else:  # 对x积分
-                                Answer = sympy.integrate(sympy.sympify(Answer), x)
-                            answertext.setValue(Answer)
-                            answer = str(Answer)
-                        else:  # 对x积分
-                            Answer = sympy.integrate(sympy.sympify(formula), x)
-                            to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                              'to', 'x  (dx)',
-                                                              'y  (dy)')
-                            if not to_x:  # 对y积分
-                                Answer = sympy.integrate(sympy.sympify(Answer), y)
-
-                            else:  # 对x积分
-                                Answer = sympy.integrate(sympy.sympify(Answer), x)
-                            answertext.setValue(Answer)
-                            answer = str(Answer)
+                                # outer layer
+                                Answer = sympy.integrate(sympy.sympify(formula), x)
+                                to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
+                                                                  '(inner)to', 'x  (dx)',
+                                                                  'y  (dy)')
+                                if not to_x:  # 对y积分
+                                    Answer = sympy.integrate(sympy.sympify(Answer), y)
+                                else:  # 对x积分
+                                    Answer = sympy.integrate(sympy.sympify(Answer), x)
+                                answertext.setValue(Answer)
+                                answer = str(Answer)
+                        except Exception as e:
+                            message_window.error('Failed to do the integral on formula:'+str(formula)+', because of the following error was occurred:'+str(e))
                     else:
                         no_infinity = message_window.question('select integral type',
                                                               'Do you want to do the normal integral(no Infinity included)')
                         integral_list = []
                         for i in range(2):
                             to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300),
-                                                              'to', 'x  (dx)',
+                                                              '(outer)to' if i == 0 else '(inner)to', 'x  (dx)',
                                                               'y  (dy)')
                             # choose the max
                             if no_infinity:
@@ -995,28 +998,35 @@ while True:
                             integral_list.append(integral_max)
 
                         if break_integral:continue
-                        # the first layer of integral
-                        if integral_list[0]:# to x
-                            Answer = sympy.integrate(sympy.sympify(formula), (x, integral_list[1], integral_list[2]))
-                        else: # to y
-                            Answer = sympy.integrate(sympy.sympify(formula), (y, integral_list[1], integral_list[2]))
+                        try:
+                            # the first(outer) layer of integral
+                            if integral_list[0]:# to x
+                                Answer = sympy.integrate(sympy.sympify(formula), (x, integral_list[1], integral_list[2]))
+                            else: # to y
+                                Answer = sympy.integrate(sympy.sympify(formula), (y, integral_list[1], integral_list[2]))
 
-                        # the second layer of the integral
-                        if integral_list[3]: # to x
-                            Answer = sympy.integrate(sympy.sympify(Answer),
-                                                         (x, integral_list[4], integral_list[5]))
-                        else: # to y
-                            Answer = sympy.integrate(sympy.sympify(Answer),
-                                                         (y, integral_list[4], integral_list[5]))
+                            # the second(inner) layer of the integral
+                            if integral_list[3]: # to x
+                                Answer = sympy.integrate(sympy.sympify(Answer),
+                                                             (x, integral_list[4], integral_list[5]))
+                            else: # to y
+                                Answer = sympy.integrate(sympy.sympify(Answer),
+                                                             (y, integral_list[4], integral_list[5]))
 
 
 
-                        if isinstance(Answer, sympy.Integral):
-                            message_window.warning(
-                                'Failed to get the symbol integral of:' + formula + ', the system will return a numeric value')
-                            Answer = str(Answer.evalf())
-                        answertext.setValue(str(Answer))
-                        answer = str(Answer)
+                            if isinstance(Answer, sympy.Integral):
+                                message_window.warning(
+                                    'Failed to get the symbol integral of:' + formula + ', the system will return a numeric value')
+                                Answer = Answer.evalf()
+                                result, err = Answer.as_real_imag()
+                                if abs(err) > 0.1 * abs(result):
+                                    message_window.warning('The answer is NOT reliable, the integral may be diverge')
+                            answertext.setValue(str(Answer))
+                            answer = str(Answer)
+                        except Exception as e:
+                            message_window.error('Failed to do the integral on formula:' + str(
+                                formula) + ', because of the following error was occurred:' + str(e))
 
                 elif INDEX == 6: # triple integral
                     integrate_list = []
@@ -1025,36 +1035,40 @@ while True:
                                                           'CANCEL', backgroundColor=(90, 90, 150),
                                                           promptTextColor=(0, 0, 0),
                                                           inputTextColor=(0, 0, 0))
-                    try:
-                        if 'x' in formula:
-                            pass
-                    except TypeError:
+                    if formula is None:
+                        message_window.error('No formula is given')
+                        continue
+                    if not ('x' in formula or 'y' in formula):
+                        message_window.error('You are not input a formula(contains "x" or/and "y"):'+str(formula))
                         continue
 
-                    answertext.setValue('')
                     definite_integral = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'TYPE',
                                                                    'definite integral',
                                                                    'indefinite integral')
-                    x = sympy.symbols('x')
-                    y = sympy.symbols('y')
-                    z = sympy.symbols('z')
+                    x = sympy.Symbol('x')
+                    y = sympy.Symbol('y')
+                    z = sympy.Symbol('z')
                     break_integral = False
                     if not definite_integral:
                         for index_ in range(3):
                             to_x = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'to', 'x  (dx)',
                                                               'y  (dy)')
                             integrate_list.append(to_x)
-                        if integrate_list[0]:  # 对x积分
-                            Answer = sympy.integrate(sympy.sympify(formula), x)
-                        else:
-                            Answer = sympy.integrate(sympy.sympify(formula), x)
-                        for i in range(2):
-                            if integrate_list[i + 1]:
-                                Answer = sympy.integrate(sympy.sympify(Answer), x)
+                        try:
+                            if integrate_list[0]:  # 对x积分
+                                Answer = sympy.integrate(sympy.sympify(formula), x)
                             else:
-                                Answer = sympy.integrate(sympy.sympify(Answer), y)
-                        answertext.setValue(Answer)
-                        answer = str(Answer)
+                                Answer = sympy.integrate(sympy.sympify(formula), x)
+                            for i in range(2):
+                                if integrate_list[i + 1]:
+                                    Answer = sympy.integrate(sympy.sympify(Answer), x)
+                                else:
+                                    Answer = sympy.integrate(sympy.sympify(Answer), y)
+                            answertext.setValue(Answer)
+                            answer = str(Answer)
+                        except Exception as e:
+                            message_window.error('Failed to do the integral on formula:' + str(
+                                formula) + ', because of the following error was occurred:' + str(e))
                     else:
                         no_infinity = message_window.question('select integral type',
                                                               'Do you want to do the normal integral(no Infinity included)')
@@ -1119,20 +1133,26 @@ while True:
                                 break
                             agreements.append(integral_min)
                         if break_integral:continue
-
-                        Answer = sympy.integrate(sympy.sympify(formula), (agreements[0], agreements[2], agreements[1]))
-                        if len(agreements) == 6:
-                            for index_ in range(2):
-                                Answer = sympy.integrate(sympy.sympify(Answer),
-                                                         (agreements[index_ + 2], agreements[index_ + 4], agreements[index_ + 3]))
-                        else:
-                            Answer = 'ERROR'
-                        if isinstance(Answer, Integral):
-                            message_window.warning(
-                                'Failed to get the symbol integral of:' + formula + ', the system will return a numeric value')
-                            Answer = str(Answer.evalf())
-                        answertext.setValue(Answer)
-                        answer = str(Answer)
+                        try:
+                            Answer = sympy.integrate(sympy.sympify(formula), (agreements[0], agreements[2], agreements[1]))
+                            if len(agreements) == 6:
+                                for index_ in range(2):
+                                    Answer = sympy.integrate(sympy.sympify(Answer),
+                                                             (agreements[index_ + 2], agreements[index_ + 4], agreements[index_ + 3]))
+                            else:
+                                Answer = 'ERROR'
+                            if isinstance(Answer, Integral):
+                                message_window.warning(
+                                    'Failed to get the symbol integral of:' + formula + ', the system will return a numeric value')
+                                Answer = Answer.evalf()
+                                result, err = Answer.as_real_imag()
+                                if abs(err) > 0.1 * abs(result):
+                                    message_window.warning('The answer is NOT reliable, the integral may be diverge')
+                            answertext.setValue(Answer)
+                            answer = str(Answer)
+                        except Exception as e:
+                            message_window.error('Failed to do the integral on formula:' + str(
+                                formula) + ', because of the following error was occurred:' + str(e))
                 event_proceeded = True
                 break
 
@@ -1329,11 +1349,11 @@ while True:
             INDEX = line4_2.Buttons.index(i)
             if i.handleEvent(event):
                 if INDEX == 0:
-                    texts += '-'
+                    usr_showing_maths_texts += '-'
                     mathtext += '-'
                     operator = False
                 elif INDEX == 1:
-                    texts += '%'
+                    usr_showing_maths_texts += '%'
                     mathtext += '%'
                 elif INDEX == 2:
                     formula = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
@@ -1413,7 +1433,7 @@ while True:
                                                               'CANCEL', backgroundColor=(90, 90, 150),
                                                               promptTextColor=(0, 0, 0),
                                                               inputTextColor=(0, 0, 0))
-                        symbols = sympy.symbols(symbols)
+                        symbols = [sympy.Symbol(i) for i in symbols.split(';') if i is not None]
                         limit = 'None'
                         try:
                             no_infinity_limits = message_window.question('select limit type',
@@ -1579,7 +1599,7 @@ while True:
                     try:
                         content = float(content)
                         mathtext += str(content)
-                        texts += str(content)
+                        usr_showing_maths_texts += str(content)
                     except:
                         message_window.error('the content that you want to paste is:"' + str(
                             content) + '" ;which is not a number(only numbers is supported yet)')
@@ -1623,10 +1643,11 @@ while True:
                     answertext.setValue(str(math.comb(n, m)))
                     answer = str(math.comb(n, m))
                 elif INDEX == 4:
-                    pyperclip.copy(texts)
-
+                    pyperclip.copy(usr_showing_maths_texts)
+                elif INDEX == 5:
+                    MEMORY = ('', '')
         if backspace.handleEvent(event):
-            texts = texts[0:-1]
+            usr_showing_maths_texts = usr_showing_maths_texts[0:-1]
             if len(mathtext) == 0:
                 continue
             while mathtext[-1] == " ":

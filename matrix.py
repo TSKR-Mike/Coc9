@@ -251,7 +251,7 @@ def write_matrix_to_CocMatrixInfo(file_name, matrix):
 def load_matrix_3_choices(window, clock, names,debug=False):
     loading_type_selector = CheckBox(3, ['input manually', 'load from .xlsx files', 'load from .CocMatrixInfo files'], 1,
                                       window, clock, first_x=40, first_y=100, each_add_x=0, each_add_y=30,
-                                      buttons_adjust_length=100, background_color=(90, 90, 150))
+                                      buttons_adjust_length=0, background_color=(90, 90, 150))
     if loading_type_selector.clicked_choices == 'cancel':
         message_window.error('no inputs is given')
         return
@@ -751,7 +751,7 @@ class MatrixUi(subWindow):
                                          ['by line(---)', 'by column(|||)', 'by cells(x,y)','RENAME'],
                                          1,
                                          self.window, self.clock, first_x=60, first_y=100, each_add_x=0, each_add_y=30,
-                                         buttons_adjust_length=100, background_color=(90, 90, 150))
+                                         buttons_adjust_length=0, background_color=(90, 90, 150))
         if len(changing_type_selector.clicked_choices) == 0 or type(changing_type_selector.clicked_choices) == str:return
         choice = changing_type_selector.clicked_choices[0]
 
@@ -761,7 +761,7 @@ class MatrixUi(subWindow):
                                               ['add one more line', 'delete a line', 'modify an line'],
                                               1,
                                               self.window, self.clock, first_x=60, first_y=100, each_add_x=0, each_add_y=30,
-                                              buttons_adjust_length=100, background_color=(90, 90, 150))
+                                              buttons_adjust_length=0, background_color=(90, 90, 150))
             if len(changing_by_line_type_selector.clicked_choices) == 0:message_window.error('no one selected!');return
             else:
                 changing_by_line_type_selector = changing_by_line_type_selector.clicked_choices[0]
@@ -799,11 +799,11 @@ class MatrixUi(subWindow):
                 self.all_matrix_dict[name][1].append(line_data)
                 self.all_matrix_data[self.all_matrix_data.index(self.curr_matrix)][1].append(line_data)
                 self.curr_matrix[1].append(line_data)
-            elif changing_type_selector == 1:#delete
+            elif changing_by_line_type_selector == 1:#delete
                 del self.all_matrix_dict[name][1][line_index]
                 del self.all_matrix_data[self.all_matrix_data.index(self.curr_matrix)][1][line_index]
                 del self.curr_matrix[1][line_index]
-            elif changing_type_selector == 2:#modify
+            elif changing_by_line_type_selector == 2:#modify
                 self.all_matrix_dict[name][1][line_index] = line_data
                 self.all_matrix_data[self.all_matrix_data.index(self.curr_matrix)][1][line_index] = line_data
                 self.curr_matrix[1][line_index] = line_data
@@ -811,7 +811,7 @@ class MatrixUi(subWindow):
             #by column
             changing_by_column_type_selector = CheckBox(3,['add one more column', 'delete a colum', 'modify an column'],
                                                       1,self.window, self.clock, first_x=60, first_y=100, each_add_x=0,
-                                                      each_add_y=30,buttons_adjust_length=100, background_color=(90, 90, 150))
+                                                      each_add_y=30,buttons_adjust_length=0, background_color=(90, 90, 150))
             if len(changing_by_column_type_selector.clicked_choices) == 0: message_window.error('no one selected!');return
             else:
                 changing_by_column_type_selector = changing_by_column_type_selector.clicked_choices[0]

@@ -1,7 +1,7 @@
 import random
 import sys
 import copy
-import pygame,pygwidgets, pyghelpers
+import pygame, pygwidgets, pyghelpers
 from pyghelpers import textYesNoDialog
 import math
 from buttoncenter import ButtonCenter
@@ -135,7 +135,7 @@ def load_complex(window, clock, names, debug=False):
     loading_type_selector = CheckBox(2, ['input manually', 'load from .CocComplexInfo files'],
                                      1,
                                      window, clock, first_x=40, first_y=100, each_add_x=0, each_add_y=30,
-                                     buttons_adjust_length=100, background_color=(90, 90, 150))
+                                     buttons_adjust_length=0, background_color=(90, 90, 150))
     if loading_type_selector.clicked_choices == 'cancel':
         message_window.error('no inputs is given')
         return
@@ -673,7 +673,7 @@ class ComplexUi(subWindow):
                                          ['reset value','RENAME'],
                                          1,
                                          self.window, self.clock, first_x=60, first_y=100, each_add_x=0, each_add_y=30,
-                                         buttons_adjust_length=100, background_color=(90, 90, 150))
+                                         buttons_adjust_length=0, background_color=(90, 90, 150))
         if len(changing_type_selector.clicked_choices) == 0 or type(changing_type_selector.clicked_choices) == str:return
         choice = changing_type_selector.clicked_choices[0]
 
@@ -764,7 +764,7 @@ class ComplexUi(subWindow):
                                  ['Remove Current Complex', 'Complex Angle', 'Complex to Polar', 'Square Root', 'Cube Root'],
                                  1,
                                  self.window, self.clock, first_x=40, first_y=100, each_add_x=0, each_add_y=30,
-                                 buttons_adjust_length=100, background_color=(90, 90, 150))
+                                 buttons_adjust_length=0, background_color=(90, 90, 150))
         if type_selector.clicked_choices == 'cancel' or len(type_selector.clicked_choices) == 0:
             message_window.error('no choice is selected');return
         choice = type_selector.clicked_choices[0]
