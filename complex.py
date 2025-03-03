@@ -231,7 +231,7 @@ class ComplexUi(subWindow):
                                                                overColor=(135, 206, 250))
 
         self.update = False
-        self.complexes_viewer = CoordinateSystem2d(self.window, (304, 190), (700, 420), 'all complexes', 'x', 'i', no_mouse=self.no_mouse)
+        self.complexes_viewer = CoordinateSystem2d(self.window, (304, 190), (700, 420), 'all complexes', 'real', 'imaginary', no_mouse=self.no_mouse)
         if len(self.all_complex_data) != 0:
             for curr in self.all_complex_data:
                 self.complexes_viewer.AddItem((0, 0), turn_complex_str_to_tuple(curr[1]), label=curr[0])
@@ -254,11 +254,6 @@ class ComplexUi(subWindow):
             else:
                 self.all_complex_preview = pygwidgets.DisplayText(self.window, (70, 345), 'Nothing to show', fontName='fonts/JetBrainsMono-Light.ttf')
 
-            if self.update:
-                self.complexes_viewer = CoordinateSystem2d(self.window, (304, 190), (700, 420), 'all complexes', 'x',
-                                                           'i', no_mouse=self.no_mouse)
-                for curr in self.all_complex_data:
-                    self.complexes_viewer.AddItem((0, 0), turn_complex_str_to_tuple(curr[1]), label=curr[0])
 
             self.complexes_viewer.draw()
             self.curr_matrix_preview_title = pygwidgets.TextButton(self.window, (304, 150), self.curr_matrix_title,
@@ -334,7 +329,7 @@ class ComplexUi(subWindow):
                 self.complexes_viewer.handle_event(event)
             pygame.display.update()
 
-    def load_matrix(self):
+    def load_complex(self):
         all_complexes = load_complex(self.window, self.clock, [i[0] for i in self.all_complex_data])
         if all_complexes is not None:
             for curr in all_complexes:
@@ -346,18 +341,6 @@ class ComplexUi(subWindow):
                 self.complexes_viewer.AddItem((0,0), c, label=name)
             self.update = True
 
-    def remove_matrix(self, matrix_name:str):
-        if matrix_name not in self.all_complex_dict.keys():
-            message_window.error('the complex "'+matrix_name+'" does not exist')
-        else:
-            del self.all_complex_dict[matrix_name]
-            index = 0
-            for i in self.all_complex_data:
-                if str(i[0]) == matrix_name:
-                    del self.all_complex_data[index]
-                    return
-                index += 1
-            self.update = True
 
     def extract_complex(self):
         file_name = pyghelpers.textAnswerDialog(self.window, (0, 0, 1004, 200), 'input file name(will be saved in "/MatrixFiles" dir)', 'OK',
@@ -390,7 +373,6 @@ class ComplexUi(subWindow):
         for curr_complex in all_complexes:
             self.all_complex_dict[curr_complex[0]] = curr_complex[1]
             self.all_complex_data.append(curr_complex)
-            print(curr_complex)
             c = turn_complex_str_to_tuple(curr_complex[1])
             self.complexes_viewer.AddItem((0,0), c, label=curr_complex[0])
         message_window.message('insert completed')

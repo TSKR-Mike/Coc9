@@ -1,10 +1,13 @@
 import random
+import datetime
+
 import pygame
 import pygwidgets
 from pygame.locals import *
 import math
 import numpy as np
 from math import pi
+from checkbox import CheckBox
 
 pygame.init()
 import matplotlib.pyplot as plt
@@ -15,13 +18,17 @@ import matplotlib.backends.backend_agg as agg
 import pylab
 from mpl_toolkits.mplot3d import Axes3D
 
-all_colours = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkgrey', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'grey', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightgrey', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen']
+#['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkgrey', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'grey', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightgrey', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen']
+all_colours = ['blue', 'red', 'green', 'purple', 'darkorange', 'magenta', 'brown']
 sensitivity = 0.5
 POINT, LINE, ARROW = 0, 1, 2
-
+plt.rcParams['lines.antialiased'] = True
+plt.rcParams['patch.antialiased'] = True
 
 class CoordinateSystem2d:
-    def __init__(self, window, loc, size, title='', x_item_name='X', y_item_name='Y', no_mouse=False):
+    def __init__(self, window, loc, size, title='', x_item_name='X', y_item_name='Y', no_mouse=False, axis_limits: list[int]=None):
+        if axis_limits is None:
+            axis_limits = (5, 5, -5, -5)
         self.size = size
         self.is_dragging = False
         self.fig = pylab.figure(figsize=(size[0] / 100, size[1] / 100),  # Inches
@@ -29,10 +36,11 @@ class CoordinateSystem2d:
         self.title, self.x_item_name, self.y_item_name = title, x_item_name, y_item_name
         self.window, self.loc = window, loc
         self.no_mouse = no_mouse
+        self.clock = pygame.time.Clock()
         self.points = []  #(loc, color, texts->None)
         self.lines = []  #(start-loc, end-loc, color, texts->None)
         self.arrows = []  #(start-loc, end-loc, color, texts->None)
-        self.coord_x_max, self.coord_y_max, self.coord_x_min, self.coord_y_min = (5, 5, -5, -5)
+        self.coord_x_max, self.coord_y_max, self.coord_x_min, self.coord_y_min = axis_limits
         self.x_length_per_line = (size[0]) / 10
         self.y_length_per_line = (size[1]) / 10
         self.length = size[0]
@@ -54,7 +62,9 @@ class CoordinateSystem2d:
                                      (0, 0, 0), fontName='fonts/JetBrainsMono-Light.ttf', font_size=15)
         self.zoom_out_button = Button(self.window, (self.loc[0] + 15, self.loc[1]), 30, 30, '-', (200, 200, 200),
                                       (0, 0, 0), fontName='fonts/JetBrainsMono-Light.ttf', font_size=15)
-
+        self.save = Button(self.window, (self.loc[0] + self.size[0] - 130, self.loc[1]), 40, 30, 'save',
+                           (200, 200, 200), (0, 0, 0),
+                           fontName='fonts/JetBrainsMono-Light.ttf', font_size=15)
     def AddItem(self, start_pos, end_pos, color=None, label: str = None, item_type=ARROW):
         """
         :param start_pos: you have to fill this anyway. If it is a POINT, this is the pos of the point.
@@ -75,7 +85,6 @@ class CoordinateSystem2d:
             self.coord_y_max = max(self.coord_y_max, start_pos[1])
             self.coord_y_min = min(self.coord_y_min, start_pos[1])
         if color is None:
-            #color = random.choice(all_colours)
             color = all_colours[self.num % len(all_colours)]
         if item_type == ARROW:
             self.arrows.append([start_pos, end_pos, color, label])
@@ -96,7 +105,7 @@ class CoordinateSystem2d:
             del self.points[index]
 
     def draw(self):
-        plt.clf()
+        plt.cla()
         plt.grid(True)
         plt.xlim(*self.last_lim[0:2])
         plt.ylim(*self.last_lim[2:4])
@@ -134,6 +143,7 @@ class CoordinateSystem2d:
             self.left_move_button.draw()
             self.reset_button.draw();self.right_move_button.draw()
             self.zoom_in_button.draw();self.zoom_out_button.draw()
+        self.save.draw()
 
     def handle_event(self, event):
         if event.type == pygame.QUIT:
@@ -183,6 +193,21 @@ class CoordinateSystem2d:
 
                 elif self.zoom_in_button.handle_event(event):
                     self.last_lim = [0.9 * i for i in self.last_lim]
+            if self.save.handle_event(event):
+                type_selector = CheckBox(4,
+                                         ['.png', '.svg', '.jpg', '.pdf'],
+                                         4,
+                                         self.window, self.clock, first_x=40, first_y=100, each_add_x=0, each_add_y=30,
+                                         buttons_adjust_length=0, background_color=(90, 90, 150))
+                if len(type_selector.clicked_choices) == 0 or type(type_selector.clicked_choices) == str:
+                    return
+
+                current_time = datetime.datetime.now()
+                file_name = str(current_time).split('.')[0].split(' ')[0] + '-' + \
+                            str(current_time).split('.')[0].split(' ')[1]
+                file_name = file_name.replace(':', '-')
+                for i in type_selector.clicked_choices:
+                    plt.savefig('Img/' + file_name + ['.png', '.svg', '.jpg', '.pdf'][i])
 
         # 鼠标按下事件
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -219,27 +244,32 @@ class CoordinateSystem2d:
 
 
 class CoordinateSystem3d:
-    def __init__(self, window, loc, size, title='', no_mouse=False):
+    def __init__(self, window, loc, size, title='', no_mouse=False, axis_maxs=None, axes_mins=None, current_elev = 45,current_azim = -45):
+        if axes_mins is None:
+            axes_mins = [-5, -5, -5]
+        if axis_maxs is None:
+            axis_maxs = [5, 5, 5]
+        plt.close('all')
         self.fig = plt.figure(figsize=(size[0] / 100, size[1] / 100),  # Inches
                               dpi=100)  # dots per inch
         self.ax = self.fig.add_subplot(111, projection='3d')
         self.title = title
+        self.size = size
+        self.clock = pygame.time.Clock()
         self.no_mouse = no_mouse
         self.window, self.loc, self.size = window, loc, size
         self.points = []  # (loc, color, texts->None)
         self.lines = []  # (start-loc, end-loc, color, texts->None)
         self.arrows = []  # (start-loc, end-loc, color, texts->None)
-        self.x_length_per_line = (size[0]) / 10
-        self.y_length_per_line = (size[1]) / 10
         self.length = size[0]
         self.height = size[1]
-        self.axes_maxes = [5, 5, 5]
-        self.axes_mins = [-5, -5, -5]
+        self.axes_maxes = axis_maxs
+        self.axes_mins = axes_mins
         self.num = 0
         self.dragging = False
         self.last_mouse_pos = (0, 0)
-        self.current_elev = 45
-        self.current_azim = -45
+        self.current_elev = current_elev
+        self.current_azim = current_azim
         self.fig.tight_layout()  # 自动调整布局
         plt.rcParams['axes.edgecolor'] = (0.5, 0.5, 0.5)  # 灰色坐标轴
         self.last_lim = [-5, 5, -5, 5, -5, 5]
@@ -281,6 +311,8 @@ class CoordinateSystem3d:
         self.x = Button(self.window, (self.loc[0] + self.size[0] - 60, self.loc[1]), 30, 30, 'x',
                                      (200, 200, 200),
                                      (0, 0, 0), fontName='fonts/JetBrainsMono-Light.ttf', font_size=15)
+        self.save = Button(self.window, (self.loc[0] + self.size[0] - 130, self.loc[1]), 40, 30, 'save', (200, 200, 200),(0, 0, 0),
+                           fontName='fonts/JetBrainsMono-Light.ttf', font_size=15)
         self.mouse_wheel_direction = 1
 
     def AddItem(self, start_pos, end_pos, color=None, label: str = None, item_type=ARROW):
@@ -302,7 +334,6 @@ class CoordinateSystem3d:
         self.axes_maxes = [max(sx, ex, max_x), max(sy, ey, max_y), max(sz, ez, max_z)]
         self.axes_mins = [min(sx, ex, min_x), min(sy, ey, min_y), min(sz, ez, min_z)]
         if color is None:
-            #color = random.choice(all_colours)
             color = all_colours[self.num % len(all_colours)]
         if item_type == ARROW:
             self.arrows.append([start_pos, end_pos, color, label])
@@ -327,11 +358,12 @@ class CoordinateSystem3d:
 
     def draw(self):
         self.ax.clear()
+        plt.cla()
         self.ax.set_xlim3d(self.last_lim[0:2])
         self.ax.set_ylim3d(self.last_lim[2:4])
         self.ax.set_zlim3d(self.last_lim[4:6])
-        plt.grid(True)
-        plt.title(self.title)
+        self.ax.grid(True)
+        self.ax.set_title(self.title)
         self.ax.set_xlabel('X')
         self.ax.set_ylabel('Y')
         self.ax.set_zlabel('Z')
@@ -339,7 +371,7 @@ class CoordinateSystem3d:
         #colour is 255 mode. but the matplotlib uses 1.0 mode.
         for item in self.arrows:
             start_loc, end_loc, colour, text = item
-            plt.quiver(*start_loc, *(end_loc[0] - start_loc[0], end_loc[1] - start_loc[1], end_loc[2] - start_loc[2]),
+            self.ax.quiver(*start_loc, *(end_loc[0] - start_loc[0], end_loc[1] - start_loc[1], end_loc[2] - start_loc[2]),
                        color=colour)
             if self.num >= 3:
                 self.draw_3d_mark_lines(end_loc, self.ax, color=colour)
@@ -352,7 +384,7 @@ class CoordinateSystem3d:
                 self.ax.text(*end_loc, text, color=colour)
         for item in self.lines:
             start_loc, end_loc, colour, text = item
-            plt.plot(*start_loc, *end_loc, color=colour)
+            self.ax.plot(*start_loc, *end_loc, color=colour)
             if self.num >= 3:
                 self.draw_3d_mark_lines(end_loc, self.ax, color=colour)
                 if start_loc != (0, 0, 0):
@@ -377,13 +409,7 @@ class CoordinateSystem3d:
         self.renderer = self.canvas.get_renderer()
         self.raw_data = self.renderer.buffer_rgba()
 
-        # 在拖动过程中使用低质量渲染
-        if self.dragging:
-            plt.rcParams['lines.antialiased'] = False
-            plt.rcParams['patch.antialiased'] = False
-        else:
-            plt.rcParams['lines.antialiased'] = True
-            plt.rcParams['patch.antialiased'] = True
+
         size = self.canvas.get_width_height()
         surf = pygame.image.frombuffer(self.raw_data, size, "RGBA")
         self.window.blit(surf, self.loc)
@@ -399,6 +425,7 @@ class CoordinateSystem3d:
         self.y_add_button.draw();self.y_minus_button.draw()
         self.z_add_button.draw();self.z_minus_button.draw()
         self.x.draw();self.y.draw();self.z.draw()
+        self.save.draw()
 
     def handle_event(self, event):
         if event.type == pygame.QUIT:
@@ -485,6 +512,21 @@ class CoordinateSystem3d:
             elif self.z_minus_button.handle_event(event):
                 z_abs = abs(self.last_lim[5] - self.last_lim[4])
                 self.last_lim = [*self.last_lim[0:4], self.last_lim[4] - 0.1 * z_abs*self.mouse_wheel_direction, self.last_lim[5] - 0.1 * z_abs*self.mouse_wheel_direction]
+            elif self.save.handle_event(event):
+                type_selector = CheckBox(4,
+                                         ['.png', '.svg', '.jpg', '.pdf'],
+                                         4,
+                                         self.window, self.clock, first_x=40, first_y=100, each_add_x=0, each_add_y=30,
+                                         buttons_adjust_length=0, background_color=(90, 90, 150))
+                if len(type_selector.clicked_choices) == 0 or type(type_selector.clicked_choices) == str:
+                    return
+
+                current_time = datetime.datetime.now()
+                file_name = str(current_time).split('.')[0].split(' ')[0]+'-'+str(current_time).split('.')[0].split(' ')[1]
+                file_name = file_name.replace(':', '-')
+                for i in type_selector.clicked_choices:
+                    plt.savefig('Img/'+file_name+['.png', '.svg', '.jpg', '.pdf'][i])
+
             if event.button == 1:  # 左键释放
                 self.dragging = False
 

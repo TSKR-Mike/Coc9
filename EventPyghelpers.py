@@ -73,8 +73,7 @@ from abc import ABC, abstractmethod
 
 
 def textYesNoDialogEventProgressing(theWindow, theRect, prompt, drawFuncs: list, eventHandlerFuncs: list,
-                                    yesButtonText='Yes',
-                                    noButtonText='No', backgroundColor=DIALOG_BACKGROUND_COLOR,
+                                    yesButtonText='Yes', noButtonText='No', backgroundColor=DIALOG_BACKGROUND_COLOR,
                                     textColor=DIALOG_BLACK):
     """A function that puts up a text-based two-button modal dialog (typically Yes/No or OK/Cancel)
 
@@ -395,7 +394,7 @@ LEGAL_UNICODES = '1234567890-.'
 class InputNumber(pygwidgets.InputText):
     def __init__(self, window, loc, value='', fontName=None, fontSize=24, width=200, text_color=(0, 0, 0),
                  bkg_color=(255, 255, 255), ALLOW_FLOAT=True, ALLOW_NEGATIVE=True):
-        super().__init__(window, loc, value, fontName, fontSize, width, text_color, bkg_color)
+        super().__init__(window, loc, value, fontName, fontSize, width, text_color, bkg_color, initialFocus=True)
         self.allow_float, self.allow_negative = ALLOW_FLOAT, ALLOW_NEGATIVE
 
     def handleEvent(self, event):
@@ -425,8 +424,7 @@ class InputNumber(pygwidgets.InputText):
 
 
 def textNumberDialogEventProgressing(theWindow, theRect, prompt, drawFuncs=None, eventHandlerFuncs=None,
-                                     okButtonText='OK',
-                                     cancelButtonText='Cancel', backgroundColor=DIALOG_BACKGROUND_COLOR,
+                                     okButtonText='OK', cancelButtonText='Cancel', backgroundColor=DIALOG_BACKGROUND_COLOR,
                                      promptTextColor=DIALOG_BLACK, inputTextColor=DIALOG_BLACK, allow_negative=True,
                                      allow_float=True):
     """A function that puts up a text-based two-button answerable modal dialog (typically OK/Cancel)

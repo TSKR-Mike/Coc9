@@ -1,3 +1,13 @@
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use('agg')
+fig = plt.figure()  # 创建一个Figure对象
+ax = fig.add_subplot(111)  # 添加一个子图
+ax.plot([1, 2, 3], [4, 5, 6])  # 在子图上绘制图形
+ax.set_title('示例图形')
+
+# 保存图形
+fig.savefig('Img/example_plot_with_figure.png')  # 使用Figure对象的savefig方法
 import pygame
 import sys
 from checkbox import CheckBox

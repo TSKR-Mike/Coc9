@@ -9,6 +9,13 @@ from sympy import Integral
 from progress_bar import DotCircledProgressBar
 
 
+import re
+
+
+def is_float(s):
+    pattern = re.compile(r'^-?\d*\.?\d+$')
+    return bool(pattern.match(s))
+
 def draw_all():
     """
     draw all the buttons, text fields and else things.
@@ -269,7 +276,7 @@ line4_1 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80)
                        0, font=font_path, font_size=14, callbacks=None)
 
 line4_2 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 4,
-                       ['(-)', 'percent', 'simplify', 'solve'], window, 120, 60, 496, 272, 124, 0
+                       ['M Clean', 'percent', 'simplify', 'solve'], window, 120, 60, 496, 272, 124, 0
                        , font=font_path, font_size=14, callbacks=None)
 
 line5 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 8,
@@ -281,8 +288,8 @@ line6 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 
                      ['vector', 'divisors', 'prime factors', 'GCD', '<-(answer)', '->(answer)', 'head(answer)',
                       'No-mouse:OFF'], window, 120, 60, 0, 392, 124, 0, font=font_path,
                      font_size=14, callbacks=None)
-line7 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 6,
-                     ['paste', 'user guide', 'A(n,m)', 'C(n,m)', 'copy formula', 'Memory C'], window, 120, 60, 0, 452, 124, 0,
+line7 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 5,
+                     ['paste', 'user guide', 'A(n,m)', 'C(n,m)', 'copy formula'], window, 120, 60, 0, 452, 124, 0,
                      font=font_path,
                      font_size=14, callbacks=None)
 
@@ -861,6 +868,8 @@ while True:
                             if integral_min is None:
                                 message_window.error('No numbers is given')
                                 continue
+                            if is_float(integral_min):integral_min = float(integral_min)
+                            if is_float(integral_max):integral_max = float(integral_max)
                             try:
                                 if not to_x:  # 对y积分
                                     Answer = sympy.integrate(sympy.sympify(formula), (y, integral_min, integral_max))
@@ -993,6 +1002,8 @@ while True:
                                 message_window.error('No numbers is given')
                                 break_integral = True
                                 break
+                            if is_float(integral_min):integral_min = float(integral_min)
+                            if is_float(integral_max):integral_max = float(integral_max)
                             integral_list.append(x if to_x else y)
                             integral_list.append(integral_min)
                             integral_list.append(integral_max)
@@ -1104,6 +1115,7 @@ while True:
                                 message_window.error('No numbers is given!')
                                 break_integral = True
                                 break
+                            if is_float(integral_max):integral_max = float(integral_max)
                             agreements.append(integral_max)
                             # choose the min
                             if no_infinity:
@@ -1131,6 +1143,7 @@ while True:
                                 message_window.error('No numbers is given')
                                 break_integral = True
                                 break
+                            if is_float(integral_min): integral_min = float(integral_min)
                             agreements.append(integral_min)
                         if break_integral:continue
                         try:
@@ -1349,9 +1362,7 @@ while True:
             INDEX = line4_2.Buttons.index(i)
             if i.handleEvent(event):
                 if INDEX == 0:
-                    usr_showing_maths_texts += '-'
-                    mathtext += '-'
-                    operator = False
+                    MEMORY = ('', '')
                 elif INDEX == 1:
                     usr_showing_maths_texts += '%'
                     mathtext += '%'
@@ -1644,8 +1655,6 @@ while True:
                     answer = str(math.comb(n, m))
                 elif INDEX == 4:
                     pyperclip.copy(usr_showing_maths_texts)
-                elif INDEX == 5:
-                    MEMORY = ('', '')
         if backspace.handleEvent(event):
             usr_showing_maths_texts = usr_showing_maths_texts[0:-1]
             if len(mathtext) == 0:

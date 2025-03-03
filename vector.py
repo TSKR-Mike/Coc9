@@ -274,7 +274,6 @@ class VectorUi(subWindow):
             for curr in self.all_vector_data:
                 if type(curr[1]) == tuple:
                     curr[1] = tuple([float(i) for i in list(curr[1])])
-            #print(self.all_vector_data)
             # draw the view of all vectors
             if len(self.all_vector_data) != 0:
                 if (type(self.all_vector_preview) != TableViewer.Table.WindowListViewer) or self.update:
@@ -288,11 +287,6 @@ class VectorUi(subWindow):
             else:
                 self.all_vector_preview = pygwidgets.DisplayText(self.window, (70, 345), 'Nothing to show',
                                                                  fontName='fonts/JetBrainsMono-Light.ttf')
-
-            if self.update:
-                self.vectors_viewer = CoordinateSystem3d(self.window, (304, 190), (700, 420), 'all vectors', no_mouse=self.no_mouse)
-                for curr in self.all_vector_data:
-                    self.vectors_viewer.AddItem((0, 0, 0), turn_vector_str_to_tuple(curr[1]), label=curr[0])
 
             self.vectors_viewer.draw()
             self.curr_vector_preview_title = pygwidgets.TextButton(self.window, (304, 150), self.curr_vector_title,
@@ -734,7 +728,7 @@ class VectorUi(subWindow):
                                  ['Remove Curr Vec','Vector Projection', 'Vector Angle', 'Normalize Vector', 'Cross Product',
                                   'Projection Length'],
                                  1,
-                                 self.window, self.clock, first_x=40, first_y=0, each_add_x=0, each_add_y=30,
+                                 self.window, self.clock, first_x=40, first_y=50, each_add_x=0, each_add_y=30,
                                  buttons_adjust_length=0, background_color=(90, 90, 150))
         if type_selector.clicked_choices == 'cancel' or len(type_selector.clicked_choices) == 0:
             message_window.error('no choice is selected')

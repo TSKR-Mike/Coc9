@@ -727,7 +727,7 @@ def data_visualize_2d(window, clock, debug=False):
     develop time:2025-1-17
     """
     global message_window
-    plt.close()
+    plt.close('all')
     fig = plt.figure()
     fig.clear()
     data_collecting_method = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'how do you want to collect data',
@@ -1528,7 +1528,7 @@ def loading_data(data_collecting_method, window, comments:str='', reload_data=Tr
 
 
 def data_analyze(window, clock):
-    plt.close()
+    plt.close('all')
     fig = plt.figure()
     fig.clear()
     global message_window, statistics_funcs
@@ -1881,7 +1881,7 @@ def data_comparison(window, clock):
         return
     charts_x_num = max([1,int(np.ceil(np.sqrt(data_num)))])
     charts_y_num = max([1,int(np.ceil(data_num / charts_x_num))])
-    plt.close()
+    plt.close('all')
     fig = plt.figure()
     fig.clear()
     for i in range(data_num):
@@ -2040,7 +2040,7 @@ def IntervalClassification(data:list|tuple, IntervalNum:int=10, calculate_data:b
 def data_distribution_analyse(data:list|tuple, bins:int=30, normal_curve_num:int=1000,show_mean=True, show_1_sigma=True, show_2_sigma=True, show_3_sigma=True, draw_normal=True):
     mean = np.mean(data)
     std = np.std(data)
-    plt.close()
+    plt.close('all')
     fig = plt.figure()
     fig.clear()
     if draw_normal:
@@ -2199,7 +2199,7 @@ def load_matrix(window, comments='', data_collecting_method=True, req: tuple[int
 
 def data_visualize_3d(window, clock):
     axs = []
-    plt.close()
+    plt.close('all')
     fig = plt.figure()
     fig.clear()
 
