@@ -2094,7 +2094,7 @@ def data_distribution(window, clock):
                               show_2_sigma=charting_options[1], show_3_sigma=charting_options[2])
 
 
-def load_matrix(window, comments='', data_collecting_method=True, req: tuple[int, int] = None):
+def load_data_2d(window, comments='', data_collecting_method=True, req: tuple[int, int] = None):
     global message_window
     if data_collecting_method:
         message_window.browser("Choose an Excel file for the matrix's source"+comments, [('EXCEL files', '.xlsx')])
@@ -2315,8 +2315,8 @@ def data_visualize_3d(window, clock):
                                        'bar plots', 'quivers', 'contour'][curr_type], reload_data=refresh_data,
                                       file_data=file_data)
                 if y_data is None: message_window.error('No y data is selected!Skip this draw');continue
-                z_data = load_matrix(comments='z[shape:('+str(len(x_data))+','+str(len(y_data))+')]', data_collecting_method=data_collecting_method,
-                                     req=(len(x_data), len(y_data)),window=window)
+                z_data = load_data_2d(comments='z[shape:(' + str(len(x_data)) + ',' + str(len(y_data)) + ')]', data_collecting_method=data_collecting_method,
+                                      req=(len(x_data), len(y_data)), window=window)
                 if z_data is None:
                     message_window.error('No z data is selected!Skip this draw');continue
                 if len(z_data[0]) != len(x_data) or len(z_data) != len(y_data):
@@ -2398,7 +2398,7 @@ def data_visualize_3d(window, clock):
                 y_data = loading_data(data_collecting_method, window, 'for y data of the bar', reload_data=refresh_data,
                                       file_data=file_data)
                 if y_data is None: message_window.error('No y data is selected!, skip this draw');continue
-                z_data = load_matrix('for the data part',data_collecting_method=data_collecting_method, req=(len(x_data), len(y_data)))
+                z_data = load_data_2d('for the 2d data part('+str(len(x_data))+','+str(len(y_data))+')', data_collecting_method=data_collecting_method, req=(len(x_data), len(y_data)))
                 if z_data is None:
                     message_window.error('No value is selected!, skip this draw');continue
                 if len(z_data) != len(y_data) or len(z_data[0]) != len(x_data):
