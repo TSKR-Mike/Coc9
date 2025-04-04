@@ -3,8 +3,7 @@ import time
 import pygame
 import pygwidgets
 from pygame.locals import *
-from scipy.integrate import dblquad
-from sympy import Integral
+import re
 
 from progress_bar import DotCircledProgressBar
 
@@ -173,6 +172,8 @@ try:
 
     import sympy
 
+    from sympy import Integral
+
     loading.setValue('Loading dependencies...57% complete')
     loading.draw()
 
@@ -315,6 +316,7 @@ text_length_warned = False
 answer_start_index = 0
 pygame.key.set_repeat(200)
 operator = True
+pattern = re.escape('-')+'|'+re.escape('+')+'|'+re.escape('*')+'|'+re.escape('/')+'|'+re.escape('^')+'|'+re.escape('!')+'|'+re.escape('(')+'|'+re.escape(')')+'|'+re.escape('.')+'|'+re.escape('[')+'|'+re.escape(']')+'|'+re.escape(';')
 ###############################################################################################################
 #main loop-----------------------------------------------------------------------------------------------------
 ###############################################################################################################
@@ -517,6 +519,8 @@ while True:
                 if any(a in mathtext.split(" ")[-1] for a in
                        functions):  # ["sin","cos","tan",'arcsin',"arccos","arctan","log","in","root"]
                     func = 1
+        gui_math_text = usr_showing_maths_texts
+        gui_math_text = re.split(pattern, usr_showing_maths_texts)
 
         window.fill((0, 191, 255))
         if len(usr_showing_maths_texts) <= 32:

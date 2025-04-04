@@ -1,0 +1,11 @@
+scipy
+sympy
+matplotlib==3.8.5
+numpy
+pygame-ce
+pyghelpers
+pygwidgets
+pyperclip
+pandas
+openpyxl
+statsmodels

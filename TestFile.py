@@ -423,7 +423,6 @@ def data_visualize_3d(window, clock):
         message_window.error('Failed to paint because of error:'+str(e))
 
 
-
 if __name__ == '__main__':
     pygame.init()
     clock = pygame.time.Clock()
