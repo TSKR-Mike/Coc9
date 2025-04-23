@@ -2,15 +2,19 @@ import math
 from decimal import Decimal
 from enum import Enum
 
-def prime_factors(n):
+def prime_factors(n: int) -> dict:
     factors = {}
-    for i in range(2, int(math.sqrt(n)) + 1):
-        count = 0
+    while n % 2 == 0:
+        factors[2] = factors.get(2, 0) + 1
+        n //= 2
+    i = 3
+    max_factor = math.isqrt(n) + 1
+    while i <= max_factor and n > 1:
         while n % i == 0:
-            count += 1
+            factors[i] = factors.get(i, 0) + 1
             n //= i
-        if count > 0:
-            factors[i] = count
+            max_factor = math.isqrt(n) + 1
+        i += 2
     if n > 1:
         factors[n] = 1
     return factors
@@ -33,7 +37,18 @@ class Operations(Enum):
     Multiply = 3
     Power = 4
 
-
+superscript_map = {
+        '0': '⁰',
+        '1': '¹',
+        '2': '²',
+        '3': '³',
+        '4': '⁴',
+        '5': '⁵',
+        '6': '⁶',
+        '7': '⁷',
+        '8': '⁸',
+        '9': '⁹'
+    }
 up_notes:str = '⁰¹²³⁴⁵⁶⁷⁸⁹'
 oper_symbols = {Operations.Add:'+', Operations.Minus:'-', Operations.Divide:'/', Operations.Multiply:'*', Operations.Power:'^'}
 
@@ -56,12 +71,16 @@ def check_type(obj:tuple[tuple]|list[list]|list[tuple]|tuple[list]):
 class Root:
     def __init__(self, num:float=1, n:int=2, coefficient:float=1.0):
         factors = prime_factors_n_power(num, n)
-        self.num, self.n = num, n
+
+        self.num, self.n = abs(num), n
         self.coefficient = coefficient
+        if num < 0:
+            self.coefficient *= -1
+
         if len(factors) != 0:
             for curr in factors:
                 self.num /= (curr**n)
-                self.coefficient += curr
+                self.coefficient *= curr
 
 
 
@@ -89,6 +108,7 @@ class Root:
     def __eq__(self, other):
         if isinstance(other, Root):
             return (self.num == other.num) and (self.n == other.n) and (self.coefficient == other.coefficient)
+        return None
 
     def __pow__(self, power:int|float):
         if power == self.n:
@@ -151,23 +171,23 @@ class Root:
             return self.evalf() >= other
 
     def __str__(self):
-        if self.n >= 2:
-            n_str = str(self.n)
-            answer_str = str(self.coefficient) + '*'
-            total_up_notes = ''
-            for i in n_str:
-                total_up_notes += up_notes[int(i)]
-            answer_str += total_up_notes
-            answer_str += '√'; answer_str += str(self.num)
-            return answer_str
-        elif self.n == 1:
-            return str(self.coefficient) + '*' + str(self.num)
+        if self.n == 2:
+            root_symbol = "√"
         else:
-            return str(self.coefficient) + '*' + str(self.num) + '*(1/' + str(self.n) + ')'
+            root_symbol = f"{self.n}√".translate(str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹"))
+
+        coefficient_str = "" if self.coefficient == 1 else f"{self.coefficient}"
+        if self.num != 1:
+            return f"{coefficient_str}{root_symbol}{self.num}"
+        else:
+            return f"{coefficient_str}"
 
 
 class Fraction:
     def __init__(self, numerator, denominator):
+        if type(numerator) == str:numerator=Decimal(numerator)
+        if type(denominator) == str:denominator=Decimal(denominator)
+
         if type(numerator) == int and type(denominator) == int:
             gcd = math.gcd(numerator, denominator)
             self.numerator = numerator // gcd
@@ -357,75 +377,6 @@ class CompoundExpression:
         self.obj1, self.obj2 = obj1, obj2
         self.oper = oper
 
-    def __str__(self):
-        if self.obj2 is None:
-            if self.obj1 is None:return ''
-            else:return str(self.obj1)
-        else:
-            answer_str = ''
-            if isinstance(self.obj1, (float, Decimal, int)):
-                answer_str += str(self.obj1)
-            else:
-                answer_str += ('('+str(self.obj1)+')')
-
-            answer_str += oper_symbols[self.oper]
-
-            if isinstance(self.obj2, (float, Decimal, int)):
-                answer_str += str(self.obj2)
-            else:
-                answer_str += ('('+str(self.obj2)+')')
-            return answer_str
-
-    def __add__(self, other):
-        if self.obj2 is None:
-            if self.obj1 is None:self.obj1 = other
-            else:
-                if ( (isinstance(self.obj1, (float, Decimal, int)) and isinstance(other, (float, Decimal, int))) or
-                        (isinstance(self.obj1, Fraction) and isinstance(other, (Fraction, Decimal, int))) or
-                        (isinstance(self.obj1, Root) and isinstance(other, Root)) ):
-                    if isinstance(other, Root) and isinstance(self.obj1, Root):
-                        if check_roots(self.obj1, other, Operations.Add):
-                            self.obj1 += other
-                        else:
-                            self.obj2 = other
-                            self.oper = Operations.Add
-                    else:
-                        self.obj1 += other
-                else:
-                    self.obj2 = other
-                    self.oper = Operations.Add
-        else:
-            temp = CompoundExpression(self.obj1, self.obj2, self.oper)
-            self.obj1 = temp
-            self.obj2 = other
-            self.oper = Operations.Add
-
-
-
-    def __sub__(self, other):
-        if self.obj2 is None:
-            if self.obj1 is None:
-                self.obj1 = other
-            else:
-                if ((isinstance(self.obj1, (float, Decimal, int)) and isinstance(other, (float, Decimal, int))) or
-                        (isinstance(self.obj1, Fraction) and isinstance(other, (Fraction, Decimal, int))) or
-                        (isinstance(self.obj1, Root) and isinstance(other, Root))):
-                    if isinstance(other, Root) and isinstance(self.obj1, Root):
-                        if check_roots(self.obj1, other, Operations.Minus):
-                            self.obj1 -= other
-                        else:
-                            self.obj2 = other
-                            self.oper = Operations.Minus
-                    else:
-                        self.obj1 -= other
-                else:
-                    self.obj2 = other
-                    self.oper = Operations.Minus
-        else:
-            temp = CompoundExpression(self.obj1, self.obj2, self.oper)
-            self.obj1 = temp
-            self.obj2 = other
-            self.oper = Operations.Minus
 
     def __eq__(self, other):
         if isinstance(other, (int, float, Decimal)):
@@ -447,30 +398,6 @@ class CompoundExpression:
             self.obj2 = power
             self.oper = Operations.Power
 
-    def __mul__(self, other: Root|float|int|Decimal):
-        if self.obj2 is None:
-            if self.obj1 is None:
-                self.obj1 = other
-            else:
-                if ((isinstance(self.obj1, (float, Decimal, int)) and isinstance(other, (float, Decimal, int))) or
-                        (isinstance(self.obj1, Fraction) and isinstance(other, (Fraction, Decimal, int))) or
-                        (isinstance(self.obj1, Root) and isinstance(other, Root))):
-                    if isinstance(other, Root) and isinstance(self.obj1, Root):
-                        if check_roots(self.obj1, other, Operations.Multiply):
-                            self.obj1 *= other
-                        else:
-                            self.obj2 = other
-                            self.oper = Operations.Multiply
-                    else:
-                        self.obj1 *= other
-                else:
-                    self.obj2 = other
-                    self.oper = Operations.Multiply
-        else:
-            temp = CompoundExpression(self.obj1, self.obj2, self.oper)
-            self.obj1 = temp
-            self.obj2 = other
-            self.oper = Operations.Divide
 
     def __truediv__(self, other: Root|float|int|Decimal):
         if self.obj2 is None:
@@ -575,8 +502,122 @@ class CompoundExpression:
                 op1 = self.obj1 if isinstance(self.obj1, (float, Decimal, int)) else self.obj1.evalf()
                 op2 = self.obj2 if isinstance(self.obj2, (float, Decimal, int)) else self.obj2.evalf()
                 return math.pow(op1, op2)
+            return None
 
+    def __add__(self, other):
+        def try_merge(a, b):
+            if isinstance(a, Root) and isinstance(b, Root):
+                if a.n == b.n and a.num == b.num:
+                    return Root(a.num, a.n, a.coefficient + b.coefficient)
+            return None
 
-a = Root(2, 2, 2)
-b = Root(2,2,3)
-print(str((a+b).evalf()))
+        if self.obj2 is None:
+            if self.obj1 is None:
+                self.obj1 = other
+            else:
+                merged = try_merge(self.obj1, other)
+                if merged is not None:
+                    self.obj1 = merged
+                else:
+                    if isinstance(self.obj1, (int, float, Decimal)) and isinstance(other, (int, float, Decimal)):
+                        self.obj1 += other
+                    else:
+                        self.obj2 = other
+                        self.oper = Operations.Add
+        else:
+            if self.oper == Operations.Add:
+                merged = try_merge(self.obj2, other)
+                if merged is not None:
+                    self.obj2 = merged
+                    return
+            temp = CompoundExpression(self.obj1, self.obj2, self.oper)
+            self.obj1 = temp
+            self.obj2 = other
+            self.oper = Operations.Add
+
+    def __sub__(self, other):
+        def try_merge(a, b):
+            if isinstance(a, Root) and isinstance(b, Root):
+                if a.n == b.n and a.num == b.num:
+                    return Root(a.num, a.n, a.coefficient - b.coefficient)
+            return None
+
+        if self.obj2 is None:
+            if self.obj1 is None:
+                self.obj1 = other
+            else:
+                merged = try_merge(self.obj1, other)
+                if merged is not None:
+                    self.obj1 = merged
+                else:
+                    if isinstance(self.obj1, (int, float, Decimal)) and isinstance(other, (int, float, Decimal)):
+                        self.obj1 -= other
+                    else:
+                        self.obj2 = other
+                        self.oper = Operations.Minus
+        else:
+            if self.oper == Operations.Minus:
+                merged = try_merge(self.obj2, other)
+                if merged is not None:
+                    self.obj2 = merged
+                    return
+            temp = CompoundExpression(self.obj1, self.obj2, self.oper)
+            self.obj1 = temp
+            self.obj2 = other
+            self.oper = Operations.Minus
+
+    def __mul__(self, other):
+        def try_multiply(a, b):
+            if isinstance(a, Root) and isinstance(b, Root):
+                if a.n == b.n:
+                    return Root(a.num * b.num, a.n, a.coefficient * b.coefficient)
+            return None
+
+        if self.obj2 is None:
+            if self.obj1 is None:
+                self.obj1 = other
+            else:
+                multiplied = try_multiply(self.obj1, other)
+                if multiplied is not None:
+                    self.obj1 = multiplied
+                else:
+                    self.obj2 = other
+                    self.oper = Operations.Multiply
+        else:
+            temp = CompoundExpression(self.obj1, self.obj2, self.oper)
+            self.obj1 = temp
+            self.obj2 = other
+            self.oper = Operations.Multiply
+
+    def __str__(self):
+        def format_root(root):
+            if root.n == 2:
+                return f"{root.coefficient}√{root.num}"
+            else:
+                return f"{root.coefficient}{superscript_map[str(root.n)]}√{root.num}"
+
+        if self.obj2 is None:
+            if self.obj1 is None: return ''
+            if isinstance(self.obj1, Root):
+                return format_root(self.obj1)
+            return str(self.obj1)
+        else:
+            left = format_root(self.obj1) if isinstance(self.obj1, Root) else f'({self.obj1})'
+            right = format_root(self.obj2) if isinstance(self.obj2, Root) else f'({self.obj2})'
+            return f"{left}{oper_symbols[self.oper]}{right}"
+
+    def simplify(self):
+        simplified = []
+        seen = {}
+        for expr in [self.obj1, self.obj2]:
+            if isinstance(expr, Root):
+                key = (expr.num, expr.n)
+                if key in seen:
+                    seen[key] = seen[key] + expr
+                else:
+                    seen[key] = expr
+            else:
+                if expr is not None:
+                    simplified.append(expr)
+        simplified.extend(seen.values())
+        return CompoundExpression(*simplified)

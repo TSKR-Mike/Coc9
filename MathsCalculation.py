@@ -237,11 +237,11 @@ def Calculation(item1: str, mode: str = 'RAD'):
                 if ';' in str(j):
                     return 'ERROR'
                 else:
-                    if 'root' in str(j):
+                    if '√' in str(j):
                         if not (('[' in j) and (']' in j)):
                             try:
-                                a = j.split('root')[0]
-                                b = j.split('root')[1]
+                                a = j.split('√')[0]
+                                b = j.split('√')[1]
                                 if a == '':
                                     a = 2
                                     # square root's simple written
@@ -252,8 +252,8 @@ def Calculation(item1: str, mode: str = 'RAD'):
                             except ValueError:
                                 return 'TYPE ERROR,the agreements of the "√" must be int or float'
                         else:
-                            a = j.split('root')[0]
-                            b = j.split('root')[1]
+                            a = j.split('√')[0]
+                            b = j.split('√')[1]
                             if a == '':
                                 a = 2
                                 # square root's simple written
@@ -328,6 +328,7 @@ def Calculation(item1: str, mode: str = 'RAD'):
         if index > len(item):
             index = 0
     try:
+        #print(item)
         n = Decimal(item[0])
     except TypeError or ValueError as e:
         #print(str(e))

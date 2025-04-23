@@ -6,6 +6,8 @@ from pygame.locals import *
 import re
 
 from progress_bar import DotCircledProgressBar
+from statistics import Message_window
+message_window = Message_window()
 
 
 import re
@@ -14,6 +16,7 @@ import re
 def is_float(s):
     pattern = re.compile(r'^-?\d*\.?\d+$')
     return bool(pattern.match(s))
+
 
 def draw_all():
     """
@@ -93,54 +96,46 @@ def get_calcu_symbol_key(event):
             return '.'
 
 
-def show_user_text():
-    global usr_showing_maths_texts, text, text_length_warned
-    if len(usr_showing_maths_texts) <= 32:
-        text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 50, 1004, backgroundColor=(255, 255, 255),
-                                      height=90)
-    elif len(usr_showing_maths_texts) <= 42:
-        text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 40, 1004, backgroundColor=(255, 255, 255),
-                                      height=90)
-    elif len(usr_showing_maths_texts) <= 55:
-        text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 30, 1004, backgroundColor=(255, 255, 255),
-                                      height=90)
-    elif len(usr_showing_maths_texts) <= 110:
-        # 双行显示
-        text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts[0:55], font_path, 30, 1004, backgroundColor=(255, 255, 255),
-                                      height=31)
-        text2 = pygwidgets.DisplayText(window, (0, 31), usr_showing_maths_texts[55:111], font_path, 30, 1004,
-                                       backgroundColor=(255, 255, 255),
-                                       height=59)
-        text2.draw()
-    else:
-        text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts[0:55], font_path, 30, 1004,
-                                      backgroundColor=(255, 255, 255),
-                                      height=31)
-        over = len(usr_showing_maths_texts) - 165
-        if len(usr_showing_maths_texts) > 165 and not text_length_warned:
-            message_window.warning(
-                "The length of the string that you input is longer than the max number(165):" + str(len(usr_showing_maths_texts)) +
-                ", suggesting canceling the formula into a shorter one, or the screen won't be able to show all characters.")
-            text_length_warned = True
-        if over <= 0:
-            text_length_warned = False
-            text.setValue(usr_showing_maths_texts[0:56])
-            text2 = pygwidgets.DisplayText(window, (0, 30), usr_showing_maths_texts[56:112], font_path, 30, 1004,
-                                           backgroundColor=(255, 255, 255),
-                                           height=30)
-            text3 = pygwidgets.DisplayText(window, (0, 60), usr_showing_maths_texts[112:165], font_path, 30, 1004,
-                                           backgroundColor=(255, 255, 255),
-                                           height=30)
-        else:
-            text.setValue(usr_showing_maths_texts[over:56 + over])
-            text2 = pygwidgets.DisplayText(window, (0, 30), usr_showing_maths_texts[56 + over:112 + over], font_path, 30, 1004,
-                                           backgroundColor=(255, 255, 255),
-                                           height=30)
-            text3 = pygwidgets.DisplayText(window, (0, 60), usr_showing_maths_texts[112 + over:165 + over], font_path, 30, 1004,
-                                           backgroundColor=(255, 255, 255),
-                                           height=30)
-        text2.draw()
-        text3.draw()
+
+
+import re
+
+pattern = re.compile(r'(\d+)(√)')
+reverse_pattern = re.compile(r'([⁰¹²³⁴⁵⁶⁷⁸⁹]+)(?!√)')
+
+
+def convert_sqrt_expression(s):
+    global pattern, reverse_pattern
+    superscript_map = {
+        '0': '⁰',
+        '1': '¹',
+        '2': '²',
+        '3': '³',
+        '4': '⁴',
+        '5': '⁵',
+        '6': '⁶',
+        '7': '⁷',
+        '8': '⁸',
+        '9': '⁹'
+    }
+    reverse_superscript_map = {v: k for k, v in superscript_map.items()}
+
+    def replacer(match):
+        number = match.group(1)
+        sqrt_symbol = match.group(2)
+        superscript = ''.join([superscript_map[d] for d in number])
+        return superscript + sqrt_symbol
+
+    converted = pattern.sub(replacer, s)
+
+    def reverse_replacer(match):
+        sup_chars = match.group(1)
+        normal = ''.join([reverse_superscript_map.get(c, c) for c in sup_chars])
+        return normal
+
+    final = reverse_pattern.sub(reverse_replacer, converted)
+
+    return final
 
 
 pygame.init()
@@ -194,7 +189,7 @@ try:
     loading.setValue('Loading dependencies...94% complete')
     loading.draw()
     ########################################################
-    from statistics import data_visualize_2d, Message_window, data_analyze, data_comparison, data_distribution, \
+    from statistics import data_visualize_2d, data_analyze, data_comparison, data_distribution, \
         data_visualize_3d
     ######################################################
     from checkbox import CheckBox
@@ -232,18 +227,17 @@ pygame.font.init()
 loading_obj.done()
 """
 ----------------------------
-| version: 9.2             |
-| develop time: 2025-3-1   |
+| version: 9.5             |
+| develop time: 2025-4-23  |
 ----------------------------
 """
 
 ############################################################
 #init all the things----------------------------------------
 ############################################################
-message_window = Message_window()
 xticks_angle = -45
 mode = 'DEG'
-functions = ["sin", "cos", "tan", 'arcsin', "arccos", "arctan", "log", "ln", "root", 'min']
+functions = ["sin", "cos", "tan", 'arcsin', "arccos", "arctan", "log", "ln", "√", 'min']
 plt.rcParams['font.family'] = 'SimHei'
 plt.rcParams['axes.unicode_minus'] = False
 ax.spines['top'].set_color('none')
@@ -316,7 +310,7 @@ text_length_warned = False
 answer_start_index = 0
 pygame.key.set_repeat(200)
 operator = True
-pattern = re.escape('-')+'|'+re.escape('+')+'|'+re.escape('*')+'|'+re.escape('/')+'|'+re.escape('^')+'|'+re.escape('!')+'|'+re.escape('(')+'|'+re.escape(')')+'|'+re.escape('.')+'|'+re.escape('[')+'|'+re.escape(']')+'|'+re.escape(';')
+
 ###############################################################################################################
 #main loop-----------------------------------------------------------------------------------------------------
 ###############################################################################################################
@@ -348,7 +342,7 @@ while True:
                         content) + '" ;which is not a number(only numbers is supported yet)')
                     continue
             if event.key == pygame.K_RETURN:
-                print(mathtext)
+                #print(mathtext)
                 try:
                     if mode == 'RAD':
                         text_ = Calculation(mathtext, 'RAD')
@@ -519,53 +513,51 @@ while True:
                 if any(a in mathtext.split(" ")[-1] for a in
                        functions):  # ["sin","cos","tan",'arcsin',"arccos","arctan","log","in","root"]
                     func = 1
-        gui_math_text = usr_showing_maths_texts
-        gui_math_text = re.split(pattern, usr_showing_maths_texts)
-
+        gui_math_text = convert_sqrt_expression(usr_showing_maths_texts)
         window.fill((0, 191, 255))
         if len(usr_showing_maths_texts) <= 32:
-            text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 50, 1004, backgroundColor=(255, 255, 255),
+            text = pygwidgets.DisplayText(window, (0, 0), gui_math_text, font_path, 50, 1004, backgroundColor=(255, 255, 255),
                                           height=92)
         elif len(usr_showing_maths_texts) <= 42:
-            text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 40, 1004, backgroundColor=(255, 255, 255),
+            text = pygwidgets.DisplayText(window, (0, 0), gui_math_text, font_path, 40, 1004, backgroundColor=(255, 255, 255),
                                           height=92)
         elif len(usr_showing_maths_texts) <= 55:
-            text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 30, 1004, backgroundColor=(255, 255, 255),
+            text = pygwidgets.DisplayText(window, (0, 0), gui_math_text, font_path, 30, 1004, backgroundColor=(255, 255, 255),
                                           height=92)
         elif len(usr_showing_maths_texts) <= 112:
             # 双行显示
-            text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts[0:56], font_path, 30, 1004,
+            text = pygwidgets.DisplayText(window, (0, 0), gui_math_text[0:56], font_path, 30, 1004,
                                           backgroundColor=(255, 255, 255),
                                           height=31)
-            text2 = pygwidgets.DisplayText(window, (0, 31), usr_showing_maths_texts[56:112], font_path, 30, 1004,
+            text2 = pygwidgets.DisplayText(window, (0, 31), gui_math_text[56:112], font_path, 30, 1004,
                                            backgroundColor=(255, 255, 255),
                                            height=61)
             text2.draw()
         else:
-            text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts[0:56], font_path, 30, 1004,
+            text = pygwidgets.DisplayText(window, (0, 0), gui_math_text[0:56], font_path, 30, 1004,
                                           backgroundColor=(255, 255, 255),
                                           height=31)
-            over = len(usr_showing_maths_texts) - 165
-            if len(usr_showing_maths_texts) > 165 and not text_length_warned:
+            over = len(gui_math_text) - 165
+            if len(gui_math_text) > 165 and not text_length_warned:
                 message_window.warning(
                     "The length of the string that you input is longer than the max number(165):" + str(len(usr_showing_maths_texts)) +
                     ", suggesting canceling the formula into a shorter one, or the screen won't be able to show all characters.")
                 text_length_warned = True
             if over <= 0:
                 text_length_warned = False
-                text.setValue(usr_showing_maths_texts[0:56])
-                text2 = pygwidgets.DisplayText(window, (0, 31), usr_showing_maths_texts[56:112], font_path, 30, 1004,
+                text.setValue(gui_math_text[0:56])
+                text2 = pygwidgets.DisplayText(window, (0, 31), gui_math_text[56:112], font_path, 30, 1004,
                                                backgroundColor=(255, 255, 255),
                                                height=31)
-                text3 = pygwidgets.DisplayText(window, (0, 62), usr_showing_maths_texts[112:165], font_path, 30, 1004,
+                text3 = pygwidgets.DisplayText(window, (0, 62), gui_math_text[112:165], font_path, 30, 1004,
                                                backgroundColor=(255, 255, 255),
                                                height=30)
             else:
-                text.setValue(usr_showing_maths_texts[over:56 + over])
-                text2 = pygwidgets.DisplayText(window, (0, 31), usr_showing_maths_texts[56 + over:112 + over], font_path, 30, 1004,
+                text.setValue(gui_math_text[over:56 + over])
+                text2 = pygwidgets.DisplayText(window, (0, 31), gui_math_text[56 + over:112 + over], font_path, 30, 1004,
                                                backgroundColor=(255, 255, 255),
                                                height=31)
-                text3 = pygwidgets.DisplayText(window, (0, 62), usr_showing_maths_texts[112 + over:165 + over], font_path, 30, 1004,
+                text3 = pygwidgets.DisplayText(window, (0, 62), gui_math_text[112 + over:165 + over], font_path, 30, 1004,
                                                backgroundColor=(255, 255, 255),
                                                height=31)
             text2.draw()
@@ -658,6 +650,7 @@ while True:
                                     answer = str(text_)
 
                         except Exception as e:
+                            #raise e
                             message_window.error(str(e) + ',please recheck your input')
                     # print(mathtext)
                 event_proceeded = True
@@ -748,7 +741,7 @@ while True:
                     operator = True
                 elif INDEX == 15:
                     usr_showing_maths_texts += '√'
-                    mathtext += 'root'
+                    mathtext += '√'
                     func = 1
                     operator = True
                 event_proceeded = True
@@ -1240,14 +1233,14 @@ while True:
                 elif INDEX == 1:
 
                     ploter = True
-                    choise3 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
+                    line_num = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
                                                                'how many line(s) do you want to draw?', [], [], 'OK',
                                                                'CANCEL', backgroundColor=(90, 90, 150),
-                                                               promptTextColor=(0, 0, 0),
-                                                               inputTextColor=(0, 0, 0), allow_float=False,
-                                                               allow_negative=False)
+                                                                promptTextColor=(0, 0, 0),
+                                                                inputTextColor=(0, 0, 0), allow_float=False,
+                                                                allow_negative=False)
 
-                    if choise3 is None or choise3 < 1:
+                    if line_num is None or line_num < 1:
                         continue
                     x1 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
                                                           'max x', [], [], 'OK',
@@ -1276,9 +1269,9 @@ while True:
 
                     _x = np.linspace(float(x2), float(x1), 1000)
                     _xs = []
-                    bar = windows_progress_bar(1000 * (int(choise3)), window, title='charting...')
+                    bar = windows_progress_bar(1000 * (int(line_num)), window, title='charting...', x=300, y=400)
                     bar.show()
-                    for c in range(int(choise3)):  # start drawing
+                    for c in range(int(line_num)):  # start drawing
                         bar.pause()
                         formula = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
                                                               'input you formula to draw here y = f(x) =', 'OK',
