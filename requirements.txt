@@ -1,6 +1,6 @@
 scipy
 sympy
-matplotlib==3.8.5
+matplotlib==3.8.4
 numpy
 pygame-ce
 pyghelpers
@@ -9,3 +9,4 @@ pyperclip
 pandas
 openpyxl
 statsmodels
+rich

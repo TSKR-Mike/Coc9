@@ -1,8 +1,13 @@
 import math
 import sys
 from decimal import Decimal
+from ScienceExpressions import *
 
+try:
+    from rich.traceback import install
 
+    install(show_locals=True)
+except:pass
 
 def turn_normal_expr_to_internal_expr(item: str|list|tuple):
     loc = 0
@@ -43,7 +48,7 @@ def turn_normal_expr_to_internal_expr(item: str|list|tuple):
     return file
 
 
-def __calculation(inputting: str, outputting: list, index: int):
+def __calculation(inputting: str, outputting: list, index: int, science=False):
     # 计算的函数
 
     if inputting == '+':
@@ -56,7 +61,10 @@ def __calculation(inputting: str, outputting: list, index: int):
             m = Calculation(turn_normal_expr_to_internal_expr(str(m)[1:-1]))
         del outputting[index - 2]
         del outputting[index - 2]
-        outputting[index - 2] = Decimal(m) + Decimal(g)
+        if not science:
+            outputting[index - 2] = Decimal(m) + Decimal(g)
+        else:
+            outputting[index - 2] = CompoundExpression(m, g, Operations.Add)
     elif inputting == '-':
         m = outputting[index - 2]
         g = outputting[index - 1]
@@ -67,7 +75,10 @@ def __calculation(inputting: str, outputting: list, index: int):
             m = Calculation(turn_normal_expr_to_internal_expr(str(m)[1:-1]))
         del outputting[index - 2]
         del outputting[index - 2]
-        outputting[index - 2] = Decimal(m) - Decimal(g)
+        if not science:
+            outputting[index - 2] = Decimal(m) - Decimal(g)
+        else:
+            outputting[index - 2] = CompoundExpression(m, g, Operations.Minus)
     elif inputting == '/':
         m = outputting[(index - 2)]
         g = outputting[(index - 1)]
@@ -78,7 +89,15 @@ def __calculation(inputting: str, outputting: list, index: int):
             m = Calculation(turn_normal_expr_to_internal_expr(str(m)[1:-1]))
         del outputting[index - 2]
         del outputting[index - 2]
-        outputting[index - 2] = (Decimal(m) / Decimal(g))
+        if not science:
+            outputting[index - 2] = (Decimal(m) / Decimal(g))
+        else:
+            if type(m) == type(g) == Decimal:
+                outputting[index - 2] = Fraction(m, g)
+            elif type(m) == type(g) == Fraction:
+                outputting[index - 2] = m/g
+            else:
+                outputting[index - 2] = CompoundExpression(m, g, Operations.Divide)
     elif inputting == '*':
         m = outputting[(index - 2)]
         g = outputting[(index - 1)]
@@ -89,22 +108,41 @@ def __calculation(inputting: str, outputting: list, index: int):
             m = Calculation(turn_normal_expr_to_internal_expr(str(m)[1:-1]))
         del outputting[index - 2]
         del outputting[index - 2]
-        outputting[index - 2] = (Decimal(m) * Decimal(g))
+        if not science:
+            print(m, g)
+            outputting[index - 2] = (Decimal(m) * Decimal(g))
+        else:
+            if (type(m) == type(g) == Decimal) or (type(m) == type(g) == Fraction):
+                outputting[index - 2] = m * g
+            else:
+                outputting[index - 2] = CompoundExpression(m, g, Operations.Multiply)
     elif inputting == '^':
         m = outputting[(index - 2)]
         g = outputting[(index - 1)]
         if m == '^':
             del outputting[index - 2]
-            outputting[index - 1] = Decimal(g)
+            if not science:
+                outputting[index - 1] = Decimal(g)
+            else:
+                try:
+                    outputting[index - 1] = Decimal(g)
+                except:
+                    outputting[index - 1] = g
         else:
             del outputting[index - 2]
             del outputting[index - 2]
-            outputting[index - 2] = (Decimal(m) ** Decimal(g))
+            if not science:
+                outputting[index - 2] = (Decimal(m) ** Decimal(g))
+            else:
+                if type(m) == type(g) == Decimal:
+                    outputting[index - 2] = m ** g
+                else:
+                    outputting[index - 2] = CompoundExpression(m, g, Operations.Power)
     else:
         pass
 
 
-def Calculation(item1: str, mode: str = 'RAD'):
+def Calculation(item1: str, mode: str = 'RAD', science=False):
     if item1 == '':
         return ''
     try:
@@ -230,7 +268,7 @@ def Calculation(item1: str, mode: str = 'RAD'):
                         return 'ERROR'
                 else:
                     try:
-                        item[loc] = (math.factorial(int(Calculation(turn_normal_expr_to_internal_expr(j.split('!')[0][j.index('[') + 1:-1])))))
+                        item[loc] = (math.factorial(int(Calculation(turn_normal_expr_to_internal_expr(j.split('!')[0][j.index('[') + 1:-1]),mode, science=science))))
                     except TypeError:
                         return 'ERROR'
             else:
@@ -245,10 +283,13 @@ def Calculation(item1: str, mode: str = 'RAD'):
                                 if a == '':
                                     a = 2
                                     # square root's simple written
-                                try:
-                                    item[loc] = int(b) ** (1 / int(a))
-                                except ValueError:
-                                    item[loc] = Decimal(b) ** (1 / Decimal(a))
+                                if not science:
+                                    try:
+                                        item[loc] = int(b) ** (1 / int(a))
+                                    except ValueError:
+                                        item[loc] = Decimal(b) ** (1 / Decimal(a))
+                                else:
+                                    item[loc] = Root(Decimal(a), Decimal(b))
                             except ValueError:
                                 return 'TYPE ERROR,the agreements of the "√" must be int or float'
                         else:
@@ -261,7 +302,7 @@ def Calculation(item1: str, mode: str = 'RAD'):
                                 b = b[1:-1]
                                 b = Decimal(b)
                             except:
-                                b = Calculation(turn_normal_expr_to_internal_expr(b))
+                                b = Calculation(turn_normal_expr_to_internal_expr(b), mode, science)
                                 if 'ERROR' in b or b == '':
                                     return 'ERROR:agreements of the "√" is illegal'
                             try:
@@ -282,10 +323,14 @@ def Calculation(item1: str, mode: str = 'RAD'):
                                 item[loc] = math.log(Decimal(b), Decimal(a))
                         else:
                             if ('[' in a) and (']' in a):
-                                a = Calculation(turn_normal_expr_to_internal_expr(j.split('log')[0][j.index('[') + 1:-1]))
+                                a = Calculation(turn_normal_expr_to_internal_expr(a[a.index('[') + 1:-1]), mode, science)
                             else:
                                 a = Decimal(j.split('log')[0])
-                            b = Calculation(turn_normal_expr_to_internal_expr(j.split('log')[1][j.index('[') + 1:-1]))
+                            if ('[' in b) and (']' in b):
+                                b = Calculation(turn_normal_expr_to_internal_expr(b[b.index('[') + 1:-1]), mode, science)
+                            else:
+                                b = Calculation(turn_normal_expr_to_internal_expr(b), mode, science)
+
                             try:
                                 item[loc] = math.log(int(b), int(a))
                             except ValueError:
@@ -298,29 +343,24 @@ def Calculation(item1: str, mode: str = 'RAD'):
                             else:
                                 item[loc] = math.log(Decimal(b), math.e)
                         else:
-                            b = Calculation(turn_normal_expr_to_internal_expr(j.split('ln')[1][j.index('[') + 1:-1]))
+                            b = Calculation(turn_normal_expr_to_internal_expr(j[j.index('[') + 1:-1]), mode, science)
                             if type(b) == int:
                                 item[loc] = math.log(int(b), math.e)
                             else:
                                 item[loc] = math.log(Decimal(b), math.e)
-                    elif 'mis' in str(j):
-                        if not (('[' in j) and (']' in j)):
-                            item[loc] = -Decimal(j[3:])
-                        else:
-                            item[loc] = -Decimal(Calculation(turn_normal_expr_to_internal_expr(j.split('mis')[1][j.index('[') + 1:-1])))
                     elif '%' in str(j):
                         if not (('[' in j) and (']' in j)):
                             item[loc] = Decimal(j[0:-1]) / 100
                         else:
-                            item[loc] = Decimal(Calculation(turn_normal_expr_to_internal_expr(j.split('%')[1][j.index('[') + 1:-1]))) / 100
+                            item[loc] = Decimal(Calculation(turn_normal_expr_to_internal_expr(j[j.index('[') + 1:-1]), mode, science)) / 100
                     elif ';' in str(j):
-                        item[loc] = Calculation(turn_normal_expr_to_internal_expr(j[1:]))
+                        item[loc] = Calculation(turn_normal_expr_to_internal_expr(j[1:]), mode, science)
         loc += 1
     # 计算
     index = 0
     while len(item) != 1:
         p = item[index]
-        __calculation(p, item, index)
+        __calculation(p, item, index, science)
         if p == '+' or p == '-' or p == '*' or p == '/':
             index = 0
             continue
@@ -329,7 +369,10 @@ def Calculation(item1: str, mode: str = 'RAD'):
             index = 0
     try:
         #print(item)
-        n = Decimal(item[0])
+        if not science:
+            n = Decimal(item[0])
+        else:
+            n = str(item[0])
     except TypeError or ValueError as e:
         #print(str(e))
         return str(e)
@@ -374,7 +417,10 @@ def ReversedPolishNotation(tokens:list[str]):
 if __name__ == '__main__':
     #print(trans_to_RPN('9 - ( 1 * 10 + ( 3 + 1 ) ) '.split(' ')))
     exp2 = ' ( 1 + 1 )  ^  ( 1 - 1 ) '.split(' ')
-    print(':', ReversedPolishNotation(exp2))
+    #print(':', ReversedPolishNotation(exp2))
+    print(turn_normal_expr_to_internal_expr("2√4 + 3/4 * (1−5)"))
+    print(ReversedPolishNotation(turn_normal_expr_to_internal_expr("2√4 + 3/4 * (1−5)").split(' ')))
+    print(Calculation(turn_normal_expr_to_internal_expr('2√4 + 3 / 4 * ( 1 − 5 ) ')))
     #print((trans_to_RPN(turn_normal_expr_to_internal_expr('1-(1-1)-(3-2+2-3)').split(' '))), 'exp')
     #print(Calculation('2 ^  ( 1 + 1 ) '))
     #print(trans_to_RPN('1 - -4 - ( 101 - 2 ) '.split(' ')), 'exp2')

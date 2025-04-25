@@ -3,14 +3,16 @@ import time
 import pygame
 import pygwidgets
 from pygame.locals import *
-import re
 
 from progress_bar import DotCircledProgressBar
 from statistics import Message_window
 message_window = Message_window()
 
+try:
+    from rich.traceback import install
 
-import re
+    install(show_locals=True)
+except:pass
 
 
 def is_float(s):

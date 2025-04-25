@@ -36,7 +36,7 @@ class windows_progress_bar:
         def continue_show(self):
             self.stop = False
 
-    def __init__(self, max_num_of_items: int, window, x=0, y=0, title='progressing...', undefined_lenth=False):
+    def __init__(self, max_num_of_items: int, window, x=0, y=0, title='progressing...', undefined_lenth=False, item_name='item'):
         self.old_persent_value = 0
         self.window = window
         self.clock = pygame.time.Clock()
@@ -47,6 +47,7 @@ class windows_progress_bar:
         self.last_excuteds = 0
         self.x = x
         self.y = y
+        self.item_name = item_name
         self.start_time = 0.0
         self.end_time = 0.0
         self.excuted_items = 0
@@ -56,6 +57,7 @@ class windows_progress_bar:
                                             textColor=(0, 0, 0), backgroundColor=pygwidgets.PYGWIDGETS_GRAY,
                                             fontSize=30)
         self.last_EXCUTED_ITEMS = 0
+        self.waiting_frame=0
         self.update_time(self.excuted_items)
         self.undefined = undefined_lenth
         self.bkground = pygwidgets.TextButton(self.window,(self.x-5, self.y), "", upColor=pygwidgets.PYGWIDGETS_GRAY
@@ -81,7 +83,7 @@ class windows_progress_bar:
                                          fontName='TimesNewRoman')
 
         self.speed = pygwidgets.DisplayText(window, (self.x + 70, self.y + 100),
-                                            'speed:' + str(self.speed_text) + 'items/second', textColor=(0, 0, 0),
+                                            str(self.speed_text) + self.item_name+'/s', textColor=(0, 0, 0),
                                             backgroundColor=pygwidgets.PYGWIDGETS_GRAY, fontSize=30,
                                             fontName='TimesNewRoman')
         self.eta = pygwidgets.DisplayText(window, (self.x + 370, self.y + 100), 'ETA:' + self.eta_text,
@@ -121,12 +123,16 @@ class windows_progress_bar:
         percent.draw()
         self.title.draw()
         speed = percent_value - self.old_persent_value
-        if speed * 10 > 5:
-            self.step += speed * 10
+        if self.waiting_frame == 0:
+            if speed * 10 > 5:
+                self.step += speed * 10
+            else:
+                self.step += 5
         else:
-            self.step += 5
+            self.waiting_frame -= 1
         if self.step - 46 >= percent_value * 4.9:
             self.step = 0
+            self.waiting_frame = 60
         self.eta.draw()
         self.speed.draw()
         self.clock.tick(30)
@@ -157,17 +163,6 @@ class windows_progress_bar:
         for _ in pygame.event.get():
             pass
 
-    def start(self):
-        self.start_time = time.time()
-        for _ in pygame.event.get():
-            pass
-
-    def _update_thread_start(self):
-        while self.excuted_items < self.max_num:
-            self.update()
-        pygame.quit()
-        sys.exit(0)
-
     def update_time(self, num: int):
         if num >= 0 and type(num) == int:
             self.last_EXCUTED_ITEMS = self.excuted_items
@@ -176,7 +171,7 @@ class windows_progress_bar:
         if self.last_EXCUTED_ITEMS != self.excuted_items:
             if self.end_time - self.start_time != 0:
                 self.same_num = 0
-                self.speed_text = str(round(1 / (self.end_time - self.start_time), 1))
+                self.speed_text = str(round((self.excuted_items-self.last_EXCUTED_ITEMS) / (self.end_time - self.start_time), 1))
         else:
             self.same_num += 1
             if self.same_num >= 100:
@@ -194,6 +189,7 @@ class windows_progress_bar:
                     round(round(self.max_num - self.excuted_items) / float(self.speed_text) % 60))
         else:
             self.eta_text = '??:??'
+        self.start_time = time.time()
 
     def show(self):
         self.updater = windows_progress_bar._updater(self, self.undefined)
@@ -464,15 +460,18 @@ if __name__ == '__main__':
     window = pygame.display.set_mode((1004, 600))
     clock = pygame.time.Clock()
     window.fill((0, 191, 255))
-    e = DotCircledProgressBar(window, clock, (400, 300), 40, 5, (0, 191, 255))
-    e.run()
-    time.sleep(30)
-    e.done()
-    progress = windows_progress_bar(1000, window, 100, 200, undefined_lenth=False)
+    #e = DotCircledProgressBar(window, clock, (400, 300), 40, 5, (0, 191, 255))
+    r = windows_progress_bar(1000, window, 0, 0, 'progressing...', undefined_lenth=False)
+    r.show()
+    #e.run()
+    #time.sleep(30)
+    #e.done()
+    #progress = windows_progress_bar(1000, window, 100, 200, undefined_lenth=False)
     k = 0
-    progress.show()
+    #progress.show()
     while k <= 1000:
-        progress.start()
+        #progress.start()
         time.sleep(0.05)
         k += 1
-        progress.update_time(k)
+        #progress.update_time(k)
+        r.update_time(k)

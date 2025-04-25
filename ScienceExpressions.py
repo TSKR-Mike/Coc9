@@ -69,7 +69,7 @@ def check_type(obj:tuple[tuple]|list[list]|list[tuple]|tuple[list]):
 
 
 class Root:
-    def __init__(self, num:float=1, n:int=2, coefficient:float=1.0):
+    def __init__(self, num:float|Decimal=1, n:int|Decimal=2, coefficient:float=1.0):
         factors = prime_factors_n_power(num, n)
 
         self.num, self.n = abs(num), n
@@ -361,6 +361,8 @@ class Fraction:
 
     def evalf(self):
         return self.value
+
+
 
 
 def check_roots(obj1:Root, obj2:Root, oper:Operations):
