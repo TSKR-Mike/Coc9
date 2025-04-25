@@ -1,0 +1,21 @@
+[project]
+name = "Collections-of-Calculation"
+version = "9"
+description = "A simple software of maths."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib==3.8.4",
+    "pygame>=2.6.1",
+    "pygwidgets>=1.1.2",
+    "scipy",
+    "sympy",
+    "numpy",
+    "pygame-ce",
+    "pyghelpers",
+    "pyperclip",
+    "pandas",
+    "openpyxl",
+    "statsmodels",
+    "rich>=14.0.0",
+]
