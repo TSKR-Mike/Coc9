@@ -189,15 +189,24 @@ class Root:
 class Fraction:
     def __init__(self, numerator, denominator):
         if type(numerator) == str:numerator=Decimal(numerator)
-        if type(denominator) == str:denominator=Decimal(denominator)
 
+        if type(denominator) == str:denominator=Decimal(denominator)
         if type(numerator) == int and type(denominator) == int:
             gcd = math.gcd(numerator, denominator)
             self.numerator = numerator // gcd
             self.denominator = denominator // gcd
             self.value = numerator / denominator
         elif type(numerator) == Decimal and type(denominator) == Decimal:
-            m = max(len(str(numerator).split(".")[1]), len(str(denominator).split('.')[1]))
+            if '.' in str(numerator):
+                if '.' in str(denominator):
+                    m = max(len(str(numerator).split(".")[1]), len(str(denominator).split('.')[1]))
+                else:
+                    m = max(len(str(numerator).split(".")[1]), 1)
+            else:
+                if '.' in str(denominator):
+                    m = max(1, len(str(denominator).split('.')[1]))
+                else:
+                    m = 1
             numerator *= 10 ** m
             denominator *= 10 ** m
             numerator = int(numerator)
@@ -207,7 +216,10 @@ class Fraction:
             self.denominator = denominator // gcd
             self.value = numerator / denominator
         elif type(numerator) == Decimal and type(denominator) == int:
-            m = len(str(numerator).split(".")[1])
+            if '.' in str(numerator):
+                m = len(str(numerator).split(".")[1])
+            else:
+                m = 1
             numerator *= 10 ** m
             denominator *= 10 ** m
             numerator = int(numerator)
@@ -216,7 +228,10 @@ class Fraction:
             self.denominator = denominator // gcd
             self.value = numerator / denominator
         elif type(numerator) == int and type(denominator) == Decimal:
-            m = len(str(denominator).split(".")[1])
+            if '.' in str(denominator):
+                m = len(str(denominator).split(".")[1])
+            else:
+                m = 1
             numerator *= 10 ** m
             denominator *= 10 ** m
             denominator = int(denominator)
@@ -228,7 +243,7 @@ class Fraction:
             raise TypeError('unsupported types ' + str(type(numerator)) + ' and ' + str(type(denominator)))
 
     def __str__(self):
-        return str(self.numerator)[1:-1] + '/' + str(self.denominator)[1:-1]
+        return str(self.numerator) + '/' + str(self.denominator)
 
     def __add__(self, other):
         if type(other) != int and type(other) != float and type(other) != Fraction:
@@ -650,6 +665,11 @@ class CompoundExpression:
                             if isinstance(self.obj1, float):self.obj1 = Decimal(self.obj1)
                             if isinstance(self.obj2, float):self.obj2 = Decimal(self.obj2)
 
+                            if isinstance(self.obj1, Fraction) and not isinstance(self.obj2, Fraction):
+                                self.obj2 = Fraction(self.obj2, 1)
+                            if isinstance(self.obj2, Fraction) and not isinstance(self.obj1, Fraction):
+                                self.obj1 = Fraction(self.obj1, 1)
+
                             self.obj1 += self.obj2
                             self.obj2 = None
                             self.oper = Operations.Add
@@ -667,6 +687,11 @@ class CompoundExpression:
                                                                                                   Fraction)):
                             if isinstance(self.obj1, float):self.obj1 = Decimal(self.obj1)
                             if isinstance(self.obj2, float):self.obj2 = Decimal(self.obj2)
+
+                            if isinstance(self.obj1, Fraction) and not isinstance(self.obj2, Fraction):
+                                self.obj2 = Fraction(self.obj2, 1)
+                            if isinstance(self.obj2, Fraction) and not isinstance(self.obj1, Fraction):
+                                self.obj1 = Fraction(self.obj1, 1)
 
                             self.obj1 -= self.obj2
                             self.obj2 = None
@@ -687,6 +712,11 @@ class CompoundExpression:
                             if isinstance(self.obj1, float):self.obj1 = Decimal(self.obj1)
                             if isinstance(self.obj2, float):self.obj2 = Decimal(self.obj2)
 
+                            if isinstance(self.obj1, Fraction) and not isinstance(self.obj2, Fraction):
+                                self.obj2 = Fraction(self.obj2, 1)
+                            if isinstance(self.obj2, Fraction) and not isinstance(self.obj1, Fraction):
+                                self.obj1 = Fraction(self.obj1, 1)
+
                             self.obj1 /= self.obj2
                             self.obj2 = None
                             self.oper = Operations.Divide
@@ -705,6 +735,11 @@ class CompoundExpression:
                                                                                                   Fraction)):
                             if isinstance(self.obj1, float):self.obj1 = Decimal(self.obj1)
                             if isinstance(self.obj2, float):self.obj2 = Decimal(self.obj2)
+
+                            if isinstance(self.obj1, Fraction) and not isinstance(self.obj2, Fraction):
+                                self.obj2 = Fraction(self.obj2, 1)
+                            if isinstance(self.obj2, Fraction) and not isinstance(self.obj1, Fraction):
+                                self.obj1 = Fraction(self.obj1, 1)
 
                             self.obj1 *= self.obj2
                             self.obj2 = None
@@ -727,6 +762,8 @@ class CompoundExpression:
                             self.obj1 **= self.obj2
                             self.obj2 = None
                             self.oper = Operations.Power
+                        else:
+                            pass
                     case _:return
 
 def only_has_one_obj(CompoundExpression:CompoundExpression):

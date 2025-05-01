@@ -97,7 +97,6 @@ def __calculation(inputting: str, outputting: list, index: int, science=False):
     elif inputting == '/':
         m = outputting[(index - 2)]
         g = outputting[(index - 1)]
-        # print(m, g, 'calculating/')
         if str(g)[0] == '[' and str(g)[-1] == ']':
             g = Calculation(turn_normal_expr_to_internal_expr(str(g)[1:-1]))
         if str(m)[0] == '[' and str(m)[-1] == ']':
@@ -107,7 +106,7 @@ def __calculation(inputting: str, outputting: list, index: int, science=False):
         if not science:
             outputting[index - 2] = (Decimal(m) / Decimal(g))
         else:
-            if type(m) == type(g) == Decimal:
+            if (type(m) == type(g) == Decimal) or (is_float(str(m)) and is_float(str(g))):
                 outputting[index - 2] = Fraction(m, g)
             elif type(m) == type(g) == Fraction:
                 outputting[index - 2] = m/g
@@ -455,6 +454,7 @@ if __name__ == '__main__':
     print(turn_normal_expr_to_internal_expr("2√4 + 3/4 * (1-5)"))
     print(ReversedPolishNotation(turn_normal_expr_to_internal_expr("2√4 + 3/4 * (1-5)").split(' ')))
     print(Calculation(turn_normal_expr_to_internal_expr('2√4 + 3 / 4 * ( 1 - 5 ) '), science=True))
+    print(Calculation(' 1 / 2 ', science=True))
     #print((trans_to_RPN(turn_normal_expr_to_internal_expr('1-(1-1)-(3-2+2-3)').split(' '))), 'exp')
     #print(Calculation('2 ^  ( 1 + 1 ) '))
     #print(trans_to_RPN('1 - -4 - ( 101 - 2 ) '.split(' ')), 'exp2')
