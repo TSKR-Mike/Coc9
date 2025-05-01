@@ -88,7 +88,7 @@ def write_complex_to_CocComplexInfo(file_name, complexes:list[(str,complex)]):
 def select_curr_complex(window, all_complexes, comments=''):
     if len(all_complexes) == 0:
         message_window.error('there is no available complex')
-        return
+        return None
     drawing_data = copy.deepcopy(all_complexes)
     drawing_data.insert(0, ['name', 'value'])
     for index in range(len(all_complexes) + 1):
@@ -107,17 +107,17 @@ def select_curr_complex(window, all_complexes, comments=''):
                                                          promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0))
         if complex_index is None:
             message_window.error('exit because of empty input')
-            return
+            return None
         try:
             complex_index = int(complex_index)
         except:
             message_window.error('bad inputs for int:"'+str(complex_index)+'"')
-            return
+            return None
         if 0 <= complex_index < len(all_complexes):
             return all_complexes[complex_index]
         else:
             message_window.error('Index out of range: get ' + str(complex_index) +' instead of a number between 0 and ' + str(len(all_complexes) - 1))
-            return
+            return None
     else:
         name = pyghelpers.textAnswerDialog(window, (0, 0, 1004, 200),
                                            'input the name of the complex', 'OK',
@@ -126,10 +126,13 @@ def select_curr_complex(window, all_complexes, comments=''):
         all_names = [curr[0] for curr in all_complexes]
         if name not in all_names:
             message_window.error('the name "'+name+'" is NOT included in all complexes')
-            return
+            return None
         for curr_complex in all_complexes:
             if curr_complex[0] == name:
                 return curr_complex
+            return None
+        return None
+
 
 def load_complex(window, clock, names, debug=False):
     loading_type_selector = CheckBox(2, ['input manually', 'load from .CocComplexInfo files'],
@@ -138,7 +141,7 @@ def load_complex(window, clock, names, debug=False):
                                      buttons_adjust_length=0, background_color=(90, 90, 150))
     if loading_type_selector.clicked_choices == 'cancel':
         message_window.error('no inputs is given')
-        return
+        return None
     if len(loading_type_selector.clicked_choices) != 0:
         choice = loading_type_selector.clicked_choices[0]
         if choice == 0:
@@ -147,12 +150,12 @@ def load_complex(window, clock, names, debug=False):
                                                inputTextColor=(0, 0, 0))
             if real is None:
                 message_window.error('no inputs is given.')
-                return
+                return None
             imagine = textNumberDialogEventProgressing(window, (0, 0, 1004, 200), 'input the imaginary value(do NOT contain "j)" of the complex',[], [], 'OK',
                                                   'CANCEL', backgroundColor=(90, 90, 150), promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0))
             if imagine is None:
                 message_window.error('no inputs is given.')
-                return
+                return None
             complex_name = pyghelpers.textAnswerDialog(window, (0, 0, 1004, 200), 'input the name of the complexes', 'OK',
                                                       'CANCEL', backgroundColor=(90, 90, 150),
                                                       promptTextColor=(0, 0, 0), inputTextColor=(0, 0, 0))
@@ -162,7 +165,7 @@ def load_complex(window, clock, names, debug=False):
                 complex_name = random_string(10)
             if complex_name.count('>'):
                 message_window.error('you complex name contains illegal chars:">"')
-                return
+                return None
             if complex_name in names:
                 message_window.warning('you name is the same as some in all complexes.system will add some random chars')
                 complex_name += random_string(2)
@@ -178,7 +181,10 @@ def load_complex(window, clock, names, debug=False):
             except Exception as e:
                 if debug:
                     raise e
-                return
+                return None
+        return None
+    return None
+
 
 def all_complex_square_roots(z):
     r = abs(z)  # 模

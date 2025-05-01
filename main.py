@@ -10,7 +10,6 @@ message_window = Message_window()
 
 try:
     from rich.traceback import install
-
     install(show_locals=True)
 except:pass
 
@@ -24,7 +23,7 @@ def draw_all():
     """
     draw all the buttons, text fields and else things.
     """
-    global line1, line2, line3, line4_1, line4_2, line4_2, line5, line6, line7, warning_text
+    global line1, line2, line3, line4_1, line4_2, line4_2, line5, line6, line7, warning_text, science
     global answertext, mode_text, backspace, text
     text.draw()
     answertext.draw()
@@ -37,6 +36,7 @@ def draw_all():
     line5.drawAllButtons()
     line6.drawAllButtons()
     line7.drawAllButtons()
+    science.draw()
     backspace.draw()
     warning_text.draw()
 
@@ -47,7 +47,7 @@ def get_number_key(event):
 
     # 判断是否按下了 Shift
     shift_pressed = modifiers & pygame.KMOD_SHIFT
-    if shift_pressed: return
+    if shift_pressed: return None
     if event.key == pygame.K_0:
         return 0
     elif event.key == pygame.K_1:
@@ -68,6 +68,7 @@ def get_number_key(event):
         return 8
     elif event.key == pygame.K_9:
         return 9
+    return None
 
 
 def get_calcu_symbol_key(event):
@@ -96,8 +97,7 @@ def get_calcu_symbol_key(event):
             return '/'
         elif key_name == '.':
             return '.'
-
-
+        return None
 
 
 import re
@@ -202,7 +202,10 @@ try:
 
 except ModuleNotFoundError as e:
     loading_obj.done()
-    font = pygame.font.Font('fonts/JetBrainsMono-Light.ttf')
+    try:
+        font = pygame.font.Font('fonts/JetBrainsMono-Light.ttf')
+    except:
+        font = pygame.font.Font()
     text = font.render('Failed to launch Coc because of a dependence can not be loaded:' + str(e).split("'")[1], True,
                        (255, 0, 0))
     text2 = font.render('Press any key to quit.', True,
@@ -244,8 +247,11 @@ plt.rcParams['font.family'] = 'SimHei'
 plt.rcParams['axes.unicode_minus'] = False
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
-ax.spines['left'].set_position(('data', 0.5))
-ax.spines['bottom'].set_position(('data', 0))
+ax.spines['left'].set_position(('data', 0.0))
+ax.spines['bottom'].set_position(('data', 0.0))
+
+plt.close('all')
+matplotlib.use('wxagg')
 plt.grid(True, linestyle="--", alpha=0.5)
 usr_notice = UsrNotice(window, (0, 0), 1004, 610)
 x = sympy.symbols('x')
@@ -293,6 +299,10 @@ line7 = ButtonCenter(None, (0, 0, 0), (90, 90, 150), (0, 50, 100), (20, 0, 80), 
 answer = ''
 backspace = pygwidgets.TextButton(window, (870, 212), 'backspace', 120, 60, textColor=(0, 0, 0), upColor=(90, 90, 150),
                                   overColor=(0, 50, 100), downColor=(20, 0, 80), fontName=font_path, fontSize=18)
+science_mode = False
+science = pygwidgets.TextButton(window, (620, 452), 'science:off', 120, 60, textColor=(0, 0, 0), upColor=(90, 90, 150),
+                                  overColor=(0, 50, 100), downColor=(20, 0, 80), fontName=font_path, fontSize=16)
+
 usr_showing_maths_texts = ''
 text = pygwidgets.DisplayText(window, (0, 0), usr_showing_maths_texts, font_path, 60, 1004, backgroundColor=(255, 255, 255), height=90)
 answertext = pygwidgets.DisplayText(window, (0, 570), '', font_path, 30, 1004, backgroundColor=(255, 255, 255),
@@ -347,14 +357,14 @@ while True:
                 #print(mathtext)
                 try:
                     if mode == 'RAD':
-                        text_ = Calculation(mathtext, 'RAD')
+                        text_ = Calculation(mathtext, 'RAD', science_mode)
                         if 'ERROR' in str(text_):
                             message_window.error(str(text_))
                         else:
                             answertext.setValue(text_)
                             answer = str(text_)
                     else:
-                        text_ = Calculation(mathtext, 'DEG')
+                        text_ = Calculation(mathtext, 'DEG', science_mode)
                         # print(text_)
                         if 'ERROR' in str(text_):
                             message_window.error(str(text_))
@@ -636,14 +646,14 @@ while True:
                         #print(mathtext)
                         try:
                             if mode == 'RAD':
-                                text_ = Calculation(mathtext, 'RAD')
+                                text_ = Calculation(mathtext, 'RAD', science_mode)
                                 if 'ERROR' in str(text_):
                                     message_window.error(str(text_))
                                 else:
                                     answertext.setValue(text_)
                                     answer = str(text_)
                             else:
-                                text_ = Calculation(mathtext, 'DEG')
+                                text_ = Calculation(mathtext, 'DEG', science_mode)
                                 #print(text_)
                                 if 'ERROR' in str(text_):
                                     message_window.error(str(text_))
@@ -1233,7 +1243,7 @@ while True:
                         answertext.setValue(Answer)
                         answer = str(Answer)
                 elif INDEX == 1:
-
+                    plt.title('')
                     ploter = True
                     line_num = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
                                                                'how many line(s) do you want to draw?', [], [], 'OK',
@@ -1256,25 +1266,28 @@ while True:
                                                           promptTextColor=(0, 0, 0),
                                                           inputTextColor=(0, 0, 0))
                     if x2 is None: message_window.error('no value is given');continue
-                    y1 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
-                                                          'max y', [], [], 'OK',
-                                                          'CANCEL', backgroundColor=(90, 90, 150),
-                                                          promptTextColor=(0, 0, 0),
-                                                          inputTextColor=(0, 0, 0))
-                    if y1 is None: message_window.error('no value is given');continue
-                    y2 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
-                                                          'min y', [], [], 'OK',
-                                                          'CANCEL', backgroundColor=(90, 90, 150),
-                                                          promptTextColor=(0, 0, 0),
-                                                          inputTextColor=(0, 0, 0))
-                    if y2 is None: message_window.error('no value is given');continue
+
+                    set_ylim_manually = pyghelpers.textYesNoDialog(window, (0, 300, 400, 300), 'Do you want to set the y-limits manually', 'Yes'
+                                                      , 'No')
+                    if set_ylim_manually:
+                        y1 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
+                                                              'max y', [], [], 'OK',
+                                                              'CANCEL', backgroundColor=(90, 90, 150),
+                                                              promptTextColor=(0, 0, 0),
+                                                              inputTextColor=(0, 0, 0))
+                        if y1 is None: message_window.error('no value is given');continue
+                        y2 = textNumberDialogEventProgressing(window, (200, 100, 800, 200),
+                                                              'min y', [], [], 'OK',
+                                                              'CANCEL', backgroundColor=(90, 90, 150),
+                                                              promptTextColor=(0, 0, 0),
+                                                              inputTextColor=(0, 0, 0))
+                        if y2 is None: message_window.error('no value is given');continue
 
                     _x = np.linspace(float(x2), float(x1), 1000)
                     _xs = []
-                    bar = windows_progress_bar(1000 * (int(line_num)), window, title='charting...', x=300, y=400)
-                    bar.show()
+                    bar = windows_progress_bar(1000 * (int(line_num)), window, title='charting...', x=200, y=200, specific=False)
+
                     for c in range(int(line_num)):  # start drawing
-                        bar.pause()
                         formula = pyghelpers.textAnswerDialog(window, (200, 100, 800, 200),
                                                               'input you formula to draw here y = f(x) =', 'OK',
                                                               'CANCEL', backgroundColor=(90, 90, 150),
@@ -1300,9 +1313,7 @@ while True:
                         Formula = sympy.lambdify(sympy.symbols('x'), Answer, 'numpy')
                         _ys = []
                         _xs = []
-                        bar.continue_draw()
                         for d, e in zip(_x, range(len(_x))):
-                            bar.start()
                             _y = sympy.solve(Answer, y)  # 计算出合适的y值并加入列表中
                             x_value = d
                             _xs.append(x_value)
@@ -1317,13 +1328,20 @@ while True:
                                         x_value = d
                                         _xs.append(x_value)
                             bar.update_time(e + 1 + c * 1000)
+                            bar.update()
+                        _ys = np.array(_ys)
+                        _xs = np.array(_xs)
                         if label:
                             plt.plot(_xs, _ys, label=label)
                         else:
                             plt.plot(_xs, _ys)
+                        if not set_ylim_manually:
+                            y2 = float(np.min(_ys))
+                            y1 = float(np.max(_ys))
                         plt.axis((x2, x1, y2, y1))  # initialize the board
-                        plt.xlim(0, float(x1))
-                        plt.ylim(0, float(y1))
+
+                        plt.xlim(float(x2),float(x1))
+                        plt.ylim(float(y2), float(y1))
                         xticks = np.linspace(float(x1), float(x2), 21)
 
                         xtick = []
@@ -1654,6 +1672,14 @@ while True:
                     answer = str(math.comb(n, m))
                 elif INDEX == 4:
                     pyperclip.copy(usr_showing_maths_texts)
+
+        if science.handleEvent(event):
+            science_mode = not science_mode
+            science = pygwidgets.TextButton(window, (620, 452), 'science:' + ('on' if science_mode else 'off'), 120, 60,
+                                            textColor=(0, 0, 0), upColor=(90, 90, 150),
+                                            overColor=(0, 50, 100), downColor=(20, 0, 80), fontName=font_path,
+                                            fontSize=16)
+
         if backspace.handleEvent(event):
             usr_showing_maths_texts = usr_showing_maths_texts[0:-1]
             if len(mathtext) == 0:

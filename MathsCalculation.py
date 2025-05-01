@@ -1,4 +1,5 @@
 import math
+import re
 import sys
 from decimal import Decimal
 from ScienceExpressions import *
@@ -50,7 +51,9 @@ def turn_normal_expr_to_internal_expr(item: str|list|tuple):
 
 def __calculation(inputting: str, outputting: list, index: int, science=False):
     # 计算的函数
-
+    def is_float(s):
+        pattern = re.compile(r'^-?\d*\.?\d+$')
+        return bool(pattern.match(s))
     if inputting == '+':
         m = outputting[index - 2]
         g = outputting[index - 1]
@@ -64,6 +67,12 @@ def __calculation(inputting: str, outputting: list, index: int, science=False):
         if not science:
             outputting[index - 2] = Decimal(m) + Decimal(g)
         else:
+            if type(m) == str:
+                if is_float(m):
+                    m = Decimal(m)
+            if type(g) == str:
+                if is_float(g):
+                    g = Decimal(g)
             outputting[index - 2] = CompoundExpression(m, g, Operations.Add)
     elif inputting == '-':
         m = outputting[index - 2]
@@ -78,6 +87,12 @@ def __calculation(inputting: str, outputting: list, index: int, science=False):
         if not science:
             outputting[index - 2] = Decimal(m) - Decimal(g)
         else:
+            if type(m) == str:
+                if is_float(m):
+                    m = Decimal(m)
+            if type(g) == str:
+                if is_float(g):
+                    g = Decimal(g)
             outputting[index - 2] = CompoundExpression(m, g, Operations.Minus)
     elif inputting == '/':
         m = outputting[(index - 2)]
@@ -97,6 +112,12 @@ def __calculation(inputting: str, outputting: list, index: int, science=False):
             elif type(m) == type(g) == Fraction:
                 outputting[index - 2] = m/g
             else:
+                if type(m) == str:
+                    if is_float(m):
+                        m = Decimal(m)
+                if type(g) == str:
+                    if is_float(g):
+                        g = Decimal(g)
                 outputting[index - 2] = CompoundExpression(m, g, Operations.Divide)
     elif inputting == '*':
         m = outputting[(index - 2)]
@@ -114,7 +135,14 @@ def __calculation(inputting: str, outputting: list, index: int, science=False):
         else:
             if (type(m) == type(g) == Decimal) or (type(m) == type(g) == Fraction):
                 outputting[index - 2] = m * g
+
             else:
+                if type(m) == str:
+                    if is_float(m):
+                        m = Decimal(m)
+                if type(g) == str:
+                    if is_float(g):
+                        g = Decimal(g)
                 outputting[index - 2] = CompoundExpression(m, g, Operations.Multiply)
     elif inputting == '^':
         m = outputting[(index - 2)]
@@ -137,6 +165,12 @@ def __calculation(inputting: str, outputting: list, index: int, science=False):
                 if type(m) == type(g) == Decimal:
                     outputting[index - 2] = m ** g
                 else:
+                    if type(m) == str:
+                        if is_float(m):
+                            m = Decimal(m)
+                    if type(g) == str:
+                        if is_float(g):
+                            g = Decimal(g)
                     outputting[index - 2] = CompoundExpression(m, g, Operations.Power)
     else:
         pass
@@ -289,7 +323,7 @@ def Calculation(item1: str, mode: str = 'RAD', science=False):
                                     except ValueError:
                                         item[loc] = Decimal(b) ** (1 / Decimal(a))
                                 else:
-                                    item[loc] = Root(Decimal(a), Decimal(b))
+                                    item[loc] = Root(Decimal(b), Decimal(a))
                             except ValueError:
                                 return 'TYPE ERROR,the agreements of the "√" must be int or float'
                         else:
@@ -418,9 +452,9 @@ if __name__ == '__main__':
     #print(trans_to_RPN('9 - ( 1 * 10 + ( 3 + 1 ) ) '.split(' ')))
     exp2 = ' ( 1 + 1 )  ^  ( 1 - 1 ) '.split(' ')
     #print(':', ReversedPolishNotation(exp2))
-    print(turn_normal_expr_to_internal_expr("2√4 + 3/4 * (1−5)"))
-    print(ReversedPolishNotation(turn_normal_expr_to_internal_expr("2√4 + 3/4 * (1−5)").split(' ')))
-    print(Calculation(turn_normal_expr_to_internal_expr('2√4 + 3 / 4 * ( 1 − 5 ) ')))
+    print(turn_normal_expr_to_internal_expr("2√4 + 3/4 * (1-5)"))
+    print(ReversedPolishNotation(turn_normal_expr_to_internal_expr("2√4 + 3/4 * (1-5)").split(' ')))
+    print(Calculation(turn_normal_expr_to_internal_expr('2√4 + 3 / 4 * ( 1 - 5 ) '), science=True))
     #print((trans_to_RPN(turn_normal_expr_to_internal_expr('1-(1-1)-(3-2+2-3)').split(' '))), 'exp')
     #print(Calculation('2 ^  ( 1 + 1 ) '))
     #print(trans_to_RPN('1 - -4 - ( 101 - 2 ) '.split(' ')), 'exp2')
