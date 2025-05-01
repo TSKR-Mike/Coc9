@@ -421,7 +421,7 @@ def ReversedPolishNotation(tokens:list[str]):
     for token in tokens:
         if token == '':continue
         # determine if it is digits
-        if token.replace('.', '', 1).lstrip('-').isdigit():
+        if token.replace('.', '', 1).lstrip('-').isdigit() or '√' in token:
             output.append(token)
         elif token == '(':
             stack.append(token)
@@ -454,7 +454,7 @@ if __name__ == '__main__':
     print(turn_normal_expr_to_internal_expr("2√4 + 3/4 * (1-5)"))
     print(ReversedPolishNotation(turn_normal_expr_to_internal_expr("2√4 + 3/4 * (1-5)").split(' ')))
     print(Calculation(turn_normal_expr_to_internal_expr('2√4 + 3 / 4 * ( 1 - 5 ) '), science=True))
-    print(Calculation(' 1 / 2 ', science=True))
+    print(Calculation('1 / 2 + 3 / 2 + √3', science=True))
     #print((trans_to_RPN(turn_normal_expr_to_internal_expr('1-(1-1)-(3-2+2-3)').split(' '))), 'exp')
     #print(Calculation('2 ^  ( 1 + 1 ) '))
     #print(trans_to_RPN('1 - -4 - ( 101 - 2 ) '.split(' ')), 'exp2')

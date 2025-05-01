@@ -243,7 +243,7 @@ class Fraction:
             raise TypeError('unsupported types ' + str(type(numerator)) + ' and ' + str(type(denominator)))
 
     def __str__(self):
-        return str(self.numerator) + '/' + str(self.denominator)
+        return str(self.numerator) + ('/' + str(self.denominator)) if self.denominator != 0 else ''
 
     def __add__(self, other):
         if type(other) != int and type(other) != float and type(other) != Fraction:

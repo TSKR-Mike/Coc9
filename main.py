@@ -643,7 +643,7 @@ while True:
                             mathtext += ' / '  # 在[]外
                             func = 0
                     elif INDEX == 14:
-                        #print(mathtext)
+                        print(mathtext)
                         try:
                             if mode == 'RAD':
                                 text_ = Calculation(mathtext, 'RAD', science_mode)
