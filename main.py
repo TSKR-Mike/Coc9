@@ -5,8 +5,7 @@ import pygwidgets
 from pygame.locals import *
 
 from progress_bar import DotCircledProgressBar
-from statistics import Message_window
-message_window = Message_window()
+
 
 try:
     from rich.traceback import install
@@ -147,7 +146,7 @@ window.fill((0, 191, 255))
 icon = pygame.image.load("icon.png")
 pygame.display.set_icon(icon)
 pygame.display.set_caption('Collections of Calculation')
-pygame.display.update()
+pygame.display.flip()
 loading_obj = DotCircledProgressBar(window, clock, (502, 300), 100, 10, (0, 191, 255))
 loading_obj.run()
 loading = pygwidgets.DisplayText(window, (80, 450), 'Loading dependencies...7% complete',
@@ -178,7 +177,7 @@ try:
     import matplotlib.pyplot as plt
     import matplotlib
 
-    matplotlib.use('WXagg')
+    matplotlib.use('wxagg')
     ax = plt.gca()
     loading.setValue('Loading dependencies...81% complete')
     loading.draw()
@@ -191,14 +190,17 @@ try:
     loading.setValue('Loading dependencies...94% complete')
     loading.draw()
     ########################################################
-    from statistics import data_visualize_2d, data_analyze, data_comparison, data_distribution, \
-        data_visualize_3d
+    from statistics import data_visualize_2d, data_analyze, data_comparison, data_distribution, data_visualize_3d
     ######################################################
     from checkbox import CheckBox
     from progress_bar import windows_progress_bar
     import pyperclip
     from MathsCalculation import Calculation
     from UsrGuide import UsrNotice
+
+    from statistics import Message_window
+
+    message_window = Message_window()
 
 except ModuleNotFoundError as e:
     loading_obj.done()
@@ -227,7 +229,7 @@ except ModuleNotFoundError as e:
 
 loading.setValue('Loading dependencies...100% complete')
 loading.draw()
-time.sleep(0.5)
+time.sleep(1)
 pygame.font.init()
 loading_obj.done()
 """
@@ -251,7 +253,6 @@ ax.spines['left'].set_position(('data', 0.0))
 ax.spines['bottom'].set_position(('data', 0.0))
 
 plt.close('all')
-matplotlib.use('wxagg')
 plt.grid(True, linestyle="--", alpha=0.5)
 usr_notice = UsrNotice(window, (0, 0), 1004, 610)
 x = sympy.symbols('x')

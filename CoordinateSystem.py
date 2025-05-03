@@ -428,7 +428,7 @@ class CoordinateSystem3d:
 
     def handle_event(self, event):
         if event.type == pygame.QUIT:
-            pass
+            return None
         elif event.type == pygame.MOUSEWHEEL:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if self.loc[0] + self.size[0] > mouse_x > self.loc[0] + self.size[0] - 90 and self.loc[1] < mouse_y < self.loc[1] + 90:
@@ -436,6 +436,7 @@ class CoordinateSystem3d:
                 return False
             scale_factor = 1.1 if event.y < 0 else 0.9
             self.last_lim = [scale_factor * i for i in self.last_lim]
+            return None
         elif event.type == pygame.MOUSEBUTTONUP:
             if self.no_mouse:
                 if self.down_move_button.handle_event(event):
@@ -518,7 +519,7 @@ class CoordinateSystem3d:
                                          self.window, self.clock, first_x=40, first_y=100, each_add_x=0, each_add_y=30,
                                          buttons_adjust_length=0, background_color=(90, 90, 150))
                 if len(type_selector.clicked_choices) == 0 or type(type_selector.clicked_choices) == str:
-                    return
+                    return None
 
                 current_time = datetime.datetime.now()
                 file_name = str(current_time).split('.')[0].split(' ')[0]+'-'+str(current_time).split('.')[0].split(' ')[1]
@@ -528,6 +529,8 @@ class CoordinateSystem3d:
 
             if event.button == 1:  # 左键释放
                 self.dragging = False
+                return None
+            return None
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -537,11 +540,12 @@ class CoordinateSystem3d:
                 self.dragging = True
                 self.last_mouse_pos = event.pos
                 pygame.mouse.get_rel()  # 重置相对移动量
+                return None
             elif event.button == 2:
                 if not (self.loc[0] < event.pos[0] < self.loc[0] + self.size[0] and self.loc[1] < event.pos[1] <
                         self.loc[
                             1] + self.size[1]):
-                    return
+                    return None
                 # 添加视角复位功能
                 self.current_elev = 45
                 self.current_azim = -45
@@ -550,10 +554,12 @@ class CoordinateSystem3d:
                                  self.axes_mins[1], self.axes_maxes[1],
                                  self.axes_mins[2], self.axes_maxes[2]]
                 self.canvas.draw()
+                return None
+            return None
 
         elif event.type == pygame.MOUSEMOTION and self.dragging:
             if not (self.loc[0] < event.pos[0] < self.loc[0] + self.size[0] and self.loc[1] < event.pos[1] < self.loc[1] + self.size[1]):
-                return
+                return None
             # 获取相对移动量
             dx, dy = pygame.mouse.get_rel()
 
@@ -571,8 +577,8 @@ class CoordinateSystem3d:
             # 重新渲染图表
             self.canvas.draw()
             self.raw_data = self.renderer.buffer_rgba()
-
-
+            return None
+        return None
 
     def draw_3d_mark_lines(self, loc, ax, color:str):
         self.ax.plot([loc[0], loc[0]], [self.last_lim[2], loc[1]], [loc[2], loc[2]], linestyle='--', color=color)

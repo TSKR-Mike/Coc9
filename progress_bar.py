@@ -468,15 +468,96 @@ class DotCircledProgressBar:
         self.updater.quit_()
 
 if __name__ == '__main__':
-    window = pygame.display.set_mode((1004, 600))
+
+    import re
+
+    pattern = re.compile(r'(\d+)(√)')
+    reverse_pattern = re.compile(r'([⁰¹²³⁴⁵⁶⁷⁸⁹]+)(?!√)')
+    pygame.init()
     clock = pygame.time.Clock()
+    window = pygame.display.set_mode((1004, 600))
     window.fill((0, 191, 255))
-    #e = DotCircledProgressBar(window, clock, (400, 300), 40, 5, (0, 191, 255))
-    r = windows_progress_bar(1000, window, 200, 200, 'progressing...', undefined_lenth=False, specific=False)
-    r.show()
-    #e.run()
-    #time.sleep(30)
-    #e.done()
+    e = DotCircledProgressBar(window, clock, (400, 300), 40, 5, (0, 191, 255))
+    #r = windows_progress_bar(1000, window, 200, 200, 'progressing...', undefined_lenth=False, specific=False)
+    #r.show()
+    e.run()
+
+    loading = pygwidgets.DisplayText(window, (80, 450), 'Loading dependencies...7% complete',
+                                     textColor=(255, 255, 255), backgroundColor=(0, 191, 255), fontSize=40,
+                                     fontName='fonts/JetBrainsMono-Light.ttf')
+    loading.draw()
+    try:
+        import math
+        import sys
+        import pyghelpers
+
+        loading.setValue('Loading dependencies...15% complete')
+        loading.draw()
+        import numpy as np
+        import scipy
+
+        loading.setValue('Loading dependencies...31% complete')
+        loading.draw()
+
+        import sympy
+
+        from sympy import Integral
+
+        loading.setValue('Loading dependencies...57% complete')
+        loading.draw()
+
+        from buttoncenter import *
+        import matplotlib.pyplot as plt
+        import matplotlib
+
+        matplotlib.use('WXagg')
+        ax = plt.gca()
+        loading.setValue('Loading dependencies...81% complete')
+        loading.draw()
+
+        from EventPyghelpers import textNumberDialogEventProgressing
+        from complex import ComplexUi
+        from matrix import MatrixUi
+        from vector import VectorUi
+
+        loading.setValue('Loading dependencies...94% complete')
+        loading.draw()
+        ########################################################
+        from statistics import data_visualize_2d, data_analyze, data_comparison, data_distribution, \
+            data_visualize_3d
+        ######################################################
+        from checkbox import CheckBox
+        import pyperclip
+        from MathsCalculation import Calculation
+        from UsrGuide import UsrNotice
+
+    except ModuleNotFoundError as err:
+        e.done()
+        try:
+            font = pygame.font.Font('fonts/JetBrainsMono-Light.ttf')
+        except:
+            font = pygame.font.Font()
+        text = font.render('Failed to launch Coc because of a dependence can not be loaded:' + str(err).split("'")[1],
+                           True,
+                           (255, 0, 0))
+        text2 = font.render('Press any key to quit.', True,
+                            (255, 0, 0))
+        break_ = False
+        while True:
+            window.fill((0, 191, 255))
+            window.blit(text, (0, 0))
+            window.blit(text2, (0, 40))
+            pygame.display.update()
+            if break_: break
+            for event in pygame.event.get():
+                if (event.type == pygame.QUIT) or (event.type == pygame.KEYDOWN) or (
+                        event.type == pygame.MOUSEBUTTONDOWN):
+                    break_ = True
+                    break
+
+
+    e.done()
+    sys.exit(0)
     #progress = windows_progress_bar(1000, window, 100, 200, undefined_lenth=False)
     k = 0
     #progress.show()
@@ -485,5 +566,5 @@ if __name__ == '__main__':
         #time.sleep(0.05)
         k += 1
         #progress.update_time(k)
-        r.update_time(k)
-        r.update()
+        #r.update_time(k)
+        #r.update()

@@ -1,3 +1,4 @@
+import random
 import time, sys, threading, platform
 import pygame
 from pygame.locals import MOUSEBUTTONDOWN, KEYDOWN, SCRAP_TEXT
@@ -8,7 +9,7 @@ import threading
 import pygame
 from pygame.locals import MOUSEBUTTONDOWN
 
-
+pygame.init()
 IS_ALPHA = 0
 IS_DIGIT = 1
 IS_SYMBOL = 2
@@ -91,7 +92,6 @@ class Base(object):
     def font(self, value):
         self._font = value
         self.init_font()
-
 
 CLICK_EFFECT_TIME = 100
 DEFAULT_FONT = pygame.font.Font("simhei.ttf", 28)
@@ -354,6 +354,19 @@ class WindowListViewer:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit(0)
+        elif event.type == pygame.MOUSEWHEEL:
+            if event.y > 0 and self.SmallerY:
+                #mouse wheel move to the back
+                self.ScrollerY.scroller_y -= 30 / self.heightRatio
+                if self.ScrollerY.scroller_y < 0:
+                    self.ScrollerY.scroller_y = 0
+
+            elif event.y < 0 and self.SmallerY:
+                #mouse wheel move to the front
+                self.ScrollerY.scroller_y += 30 / self.heightRatio
+                if self.ScrollerY.scroller_y > self.ScrollerY.total_height - self.ScrollerY.height:
+                    self.ScrollerY.scroller_y = self.ScrollerY.total_height - self.ScrollerY.height
+
         if self.SmallerX:
             self.ScrollerX.handle_event(event)
             if self.ScrollerX.scroller_x != self.locCache[0]:
@@ -371,4 +384,20 @@ class WindowListViewer:
 
 
 if __name__ == '__main__':
-    pass
+    pygame.init()
+    clock = pygame.time.Clock()
+    window = pygame.display.set_mode((1004, 610))
+    window.fill((0, 191, 255))
+    pygame.display.update()
+    pygame.font.init()
+    a = WindowListViewer([[random.randint(1, 37)*random.randint(300, 1600) for k in range(5)] for j in range(7)], (300, 100), window, (100, 200))
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit(0)
+            else:
+                window.fill((0, 191, 255))
+                a.draw()
+                a.handle_event(event)
+                pygame.display.update()

@@ -18,8 +18,8 @@ class UsrNotice(subWindow):
         self.texts_p1.append(
             self.font.render('     To use "root", you need to type the number of root BEFORE the "root" symbol,',
                              True, (0, 0, 0)))
-        self.texts_p1.append(self.font.render('     like "2√4" means ²√4, instead of 2*²√4',
-                                              True, (150, 0, 0)))
+        self.texts_p1.append(self.font.render('     like  "²√4".[the system will set the number into superscript automatically.]',
+                                              True, (0, 0, 0)))
         self.texts_p1.append(self.font.render('2. Why is the window stuck?', True, (0, 0, 0)))
         self.texts_p1.append(
             self.font.render('     Minimize all windows to look for unclosed warning/question/error windows',
@@ -34,15 +34,15 @@ class UsrNotice(subWindow):
             self.font.render('     so that they can better interact with charts in "complex" and "vector".', True,
                              (0, 0, 0)))
         self.texts_p1.append(self.font.render('     If you have mouse and keyboard, you can ignore it.', True, (0, 0, 0)))
-        self.texts_p1.append(self.font.render('4. How to use matrix/complex/vector', True, (0, 0, 0)))
+        self.texts_p1.append(self.font.render('4. How to use the matrix/complex/vector mode', True, (0, 0, 0)))
         self.texts_p1.append(
-            self.font.render('     Usually, select a file to insert data from it.You can find them in ',
+            self.font.render('     Usually, select a file to insert data from it.You can find them in directory',
                              True, (0, 0, 0)))
         self.texts_p1.append(
             self.font.render('     /Coc<Type>Files or input the data manually and extract them later.',
                              True, (0, 0, 0)))
         self.texts_p1.append(
-            self.font.render('      The interact guide is on the the title bar.',
+            self.font.render('     The interact guide is on the the title bar.',
                              True, (0, 0, 0)))
         self.texts_p1.append(self.font.render('5. How to insert data from Excel files', True, (0, 0, 0)))
         self.texts_p1.append(self.font.render('     There is guide about how to load data in data science functions and matrix.', True, (0, 0, 0)))
@@ -75,6 +75,30 @@ class UsrNotice(subWindow):
             self.font.render(
                 '     like this.', True,
                 (150, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('8.About omitting symbol "*"', True,
+                             (0, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('     Omitting the "*" IS NOT ALLOWED in ALL FUNCTIONS of Coc.', True,
+                             (150, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('     For example,when typing a formula, "2x" will be recognized as SYMBOL "2x"', True,
+                             (0, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('     instead of EXPRESSION "2*x"', True,
+                             (0, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('9.How to interact with the main panel', True,
+                             (0, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('     By Mouse/Touch Screen: Click the relevant buttons.', True,
+                             (0, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('     By KeyBoard: supports keys 0~9, "+"; "-"; "*"; "/"; "^"; "."', True,
+                             (0, 0, 0)))
+        self.texts_p2.append(
+            self.font.render('         Press <Enter> to get the result.', True,
+                             (0, 0, 0)))
 
         self.left = Button(window, (loc[0]+self.length-60, loc[1]+self.height-30), 30, 30, '<',(200, 200, 200),
                                      (0, 0, 0), fontName='fonts/JetBrainsMono-Light.ttf', font_size=15)
